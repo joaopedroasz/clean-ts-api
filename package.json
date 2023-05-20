@@ -4,9 +4,9 @@
   "description": "API do Curso do Rodrigo Manguinho",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "prepare": "husky install",
-    "test:staged": "jest"
+    "test:staged": "jest --passWithNoTests"
   },
   "keywords": [],
   "author": "joao.pedroasz00@gmail.com",
