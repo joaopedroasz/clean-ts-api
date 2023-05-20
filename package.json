@@ -4,7 +4,7 @@
   "description": "API do Curso do Rodrigo Manguinho",
   "main": "index.js",
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "test": "jest --passWithNoTests --watch",
     "prepare": "husky install",
     "test:staged": "jest --passWithNoTests"
   },
