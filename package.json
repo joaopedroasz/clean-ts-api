@@ -10,6 +10,8 @@
   "author": "joao.pedroasz00@gmail.com",
   "license": "ISC",
   "devDependencies": {
-    "git-commit-msg-linter": "^5.0.4"
+    "@types/node": "^20.2.1",
+    "git-commit-msg-linter": "^5.0.4",
+    "typescript": "^5.0.4"
   }
 }

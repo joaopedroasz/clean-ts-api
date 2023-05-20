@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "CommonJS",
+    "strict": true,
+    "target": "ES2019",
+    "esModuleInterop": true,
+    "allowJs": true
+  }
+}
