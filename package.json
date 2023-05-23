@@ -4,9 +4,13 @@
   "description": "API do Curso do Rodrigo Manguinho",
   "main": "index.js",
   "scripts": {
-    "test": "jest --passWithNoTests --watch",
-    "prepare": "husky install",
-    "test:staged": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests --coverage=false --silent --noStackTrace --runInBand",
+    "test:verbose": "yarn jest --silent=false",
+    "test:unit": "yarn test --watch -c jest-unit-config.js",
+    "test:integration": "yarn test --watch -c jest-integration-config.js",
+    "test:staged": "yarn test --passWithNoTests --findRelatedTests",
+    "test:ci": "yarn test --coverage=true",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "joao.pedroasz00@gmail.com",
