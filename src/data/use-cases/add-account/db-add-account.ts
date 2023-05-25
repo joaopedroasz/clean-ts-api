@@ -1,14 +1,21 @@
-import { type Encrypter, type AccountModel, type AddAccount, type AddAccountModel } from './protocols'
+import { type Encrypter, type AccountModel, type AddAccount, type AddAccountModel, type AddAccountRepository } from './protocols'
 
 export class DbAddAccount implements AddAccount {
   private readonly encrypter: Encrypter
+  private readonly addAccountRepository: AddAccountRepository
 
-  constructor (encrypter: Encrypter) {
+  constructor (encrypter: Encrypter, addAccountRepository: AddAccountRepository) {
     this.encrypter = encrypter
+    this.addAccountRepository = addAccountRepository
   }
 
-  public async add ({ password }: AddAccountModel): Promise<AccountModel> {
-    await this.encrypter.encrypt(password)
+  public async add ({ password, email, name }: AddAccountModel): Promise<AccountModel> {
+    const encryptedPassword = await this.encrypter.encrypt(password)
+    await this.addAccountRepository.add({
+      email,
+      name,
+      password: encryptedPassword
+    })
     return {
       id: 'valid_id',
       email: 'valid_email',
