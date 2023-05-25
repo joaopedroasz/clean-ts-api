@@ -7,5 +7,6 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest'
   },
-  roots: ['<rootDir>/src']
+  roots: ['<rootDir>/src'],
+  preset: '@shelf/jest-mongodb'
 }
