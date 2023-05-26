@@ -1,4 +1,8 @@
-import { type Collection, MongoClient, type Document } from 'mongodb'
+import { type Collection, MongoClient, type Document, type ObjectId } from 'mongodb'
+
+type DataWithMongoId<Data> = { _id: ObjectId } & Data
+
+type DataWithId<Data> = { id: string } & Omit<Data, '_id'>
 
 export const MongoHelper = {
   client: undefined as unknown as MongoClient | undefined,
@@ -13,5 +17,9 @@ export const MongoHelper = {
       throw new Error('MongoDB not connected')
     }
     return MongoHelper.client.db().collection(name)
+  },
+  removeMongoId: <T>(collection: DataWithMongoId<T>): DataWithId<T> => {
+    const { _id, ...collectionWithoutId } = collection
+    return { ...collectionWithoutId, id: _id.toHexString() }
   }
 }
