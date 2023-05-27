@@ -1,5 +1,3 @@
-import { json, type Application } from 'express'
+import { json } from 'express'
 
-export const bodyParser = (app: Application): void => {
-  app.use(json())
-}
+export const bodyParser = json()
