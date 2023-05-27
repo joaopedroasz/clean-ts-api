@@ -11,7 +11,9 @@
     "test:staged": "yarn test --passWithNoTests --findRelatedTests",
     "test:ci": "yarn test --coverage=true",
     "prepare": "husky install",
-    "start": "sucrase-node src/main/server.ts"
+    "start": "yarn db:start && sucrase-node src/main/server.ts",
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker-compose down"
   },
   "keywords": [],
   "author": "joao.pedroasz00@gmail.com",
