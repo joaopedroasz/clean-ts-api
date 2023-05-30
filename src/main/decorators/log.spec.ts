@@ -1,17 +1,12 @@
 import { type LogErrorRepository } from '../../data/protocols'
-import { serverError } from '../../presentation/helpers/http'
+import { serverError, success } from '../../presentation/helpers/http'
 import { type Controller, type HttpRequest, type HttpResponse } from '../../presentation/protocols'
 import { LogControllerDecorator } from './log'
 
 const makeController = (): Controller => {
   class ControllerStub implements Controller {
     async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-      return {
-        statusCode: 200,
-        body: {
-          any_field: 'any_value'
-        }
-      }
+      return success({ any_field: 'any_value' })
     }
   }
   return new ControllerStub()
@@ -23,6 +18,13 @@ const makeLogErrorRepository = (): LogErrorRepository => {
   }
   return new LogErrorRepositoryStub()
 }
+
+const makeFakeRequest = (override?: Partial<HttpRequest>): HttpRequest => ({
+  body: {
+    any_field: 'any_values',
+    ...override?.body
+  }
+})
 
 interface SutTypes {
   sut: LogControllerDecorator
@@ -45,11 +47,7 @@ describe('LogControllerDecorator', () => {
   it('should call Controller.handle with correct values', async () => {
     const { sut, controllerStub } = makeSut()
     const handleSpy = jest.spyOn(controllerStub, 'handle')
-    const httpRequest: HttpRequest = {
-      body: {
-        any_field: 'any_value'
-      }
-    }
+    const httpRequest: HttpRequest = makeFakeRequest()
 
     await sut.handle(httpRequest)
 
@@ -58,20 +56,11 @@ describe('LogControllerDecorator', () => {
 
   it('should return the same result of the controller', async () => {
     const { sut } = makeSut()
-    const httpRequest: HttpRequest = {
-      body: {
-        any_field: 'any_value'
-      }
-    }
+    const httpRequest: HttpRequest = makeFakeRequest()
 
     const httpResponse = await sut.handle(httpRequest)
 
-    expect(httpResponse).toEqual({
-      statusCode: 200,
-      body: {
-        any_field: 'any_value'
-      }
-    })
+    expect(httpResponse).toEqual(success({ any_field: 'any_value' }))
   })
 
   it('should call LogErrorRepository with correct error if controller returns a server error', async () => {
@@ -80,11 +69,7 @@ describe('LogControllerDecorator', () => {
     fakeError.stack = 'any_stack'
     jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(serverError(fakeError))
     const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
-    const httpRequest: HttpRequest = {
-      body: {
-        any_field: 'any_value'
-      }
-    }
+    const httpRequest: HttpRequest = makeFakeRequest()
 
     await sut.handle(httpRequest)
 
