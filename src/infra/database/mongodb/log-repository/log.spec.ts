@@ -3,6 +3,10 @@ import { type Collection } from 'mongodb'
 import { MongoHelper } from '../helpers'
 import { LogMongoRepository } from './log'
 
+const makeSut = (): LogMongoRepository => {
+  return new LogMongoRepository()
+}
+
 describe('LogMongo Repository', () => {
   const MONGO_URL = process.env.MONGO_URL ?? 'any_url'
   let errorCollection: Collection
@@ -21,7 +25,7 @@ describe('LogMongo Repository', () => {
   })
 
   it('should create en error log on success', async () => {
-    const sut = new LogMongoRepository()
+    const sut = makeSut()
 
     await sut.logError('any_error')
 
