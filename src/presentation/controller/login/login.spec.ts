@@ -1,5 +1,6 @@
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { badRequest } from '../../helpers/http'
+import { type HttpRequest } from '../../protocols'
 import { type EmailValidator } from '../../protocols/email-validator'
 import { LoginController } from './login'
 
@@ -12,6 +13,14 @@ const makeEmailValidator = (): EmailValidator => {
 
   return new EmailValidatorStub()
 }
+
+const makeFakeRequest = (override?: Partial<HttpRequest>): HttpRequest => ({
+  body: {
+    email: 'any_email@mail.com',
+    password: 'any_password',
+    ...override?.body
+  }
+})
 
 interface SutTypes {
   sut: LoginController
@@ -30,12 +39,7 @@ const makeSut = (): SutTypes => {
 describe('LoginController', () => {
   it('should return 400 if no email is provided', async () => {
     const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        email: undefined,
-        password: 'any_password'
-      }
-    }
+    const httpRequest = makeFakeRequest({ body: { email: undefined } })
 
     const httpResponse = await sut.handle(httpRequest)
 
@@ -44,12 +48,7 @@ describe('LoginController', () => {
 
   it('should return 400 if no password is provided', async () => {
     const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        email: 'email@mail.com',
-        password: undefined
-      }
-    }
+    const httpRequest = makeFakeRequest({ body: { password: undefined } })
 
     const httpResponse = await sut.handle(httpRequest)
 
@@ -59,27 +58,17 @@ describe('LoginController', () => {
   it('should call EmailValidator with correct email', async () => {
     const { sut, emailValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
-    const httpRequest = {
-      body: {
-        email: 'email@mail.com',
-        password: 'any_password'
-      }
-    }
+    const httpRequest = makeFakeRequest()
 
     await sut.handle(httpRequest)
 
-    expect(isValidSpy).toHaveBeenCalledWith('email@mail.com')
+    expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
   it('should return 400 if an invalid email is provided', async () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-    const httpRequest = {
-      body: {
-        email: 'invalid_mail@mail.com',
-        password: 'any_password'
-      }
-    }
+    const httpRequest = makeFakeRequest({ body: { email: 'invalid_email@mail.com' } })
 
     const httpResponse = await sut.handle(httpRequest)
 
