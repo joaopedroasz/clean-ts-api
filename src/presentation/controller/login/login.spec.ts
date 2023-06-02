@@ -8,7 +8,8 @@ import {
   MissingParamError,
   InvalidParamError,
   serverError,
-  unauthorized
+  unauthorized,
+  success
 } from './protocols'
 
 const makeEmailValidator = (): EmailValidator => {
@@ -135,5 +136,16 @@ describe('LoginController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('should return 200 if valid credentials are provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeFakeRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(success({
+      accessToken: 'any_token'
+    }))
   })
 })
