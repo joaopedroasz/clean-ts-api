@@ -8,7 +8,8 @@ import {
   MissingParamError,
   InvalidParamError,
   unauthorized,
-  serverError
+  serverError,
+  success
 } from './protocols'
 
 export class LoginController implements Controller {
@@ -32,8 +33,9 @@ export class LoginController implements Controller {
       if (!isValidEmail) return badRequest(new InvalidParamError('email'))
 
       const accessToken = await this.authentication.auth({ email, password })
-
       if (!accessToken) return unauthorized()
+
+      return success({ accessToken })
     } catch (error) {
       return serverError(error)
     }
