@@ -1,8 +1,10 @@
-import { CompareFieldsValidation } from '../../../presentation/helpers/validators/compare-fields'
-import { EmailValidation } from '../../../presentation/helpers/validators/email'
-import { RequiredFieldValidation } from '../../../presentation/helpers/validators/required-field'
+import {
+  CompareFieldsValidation,
+  RequiredFieldValidation,
+  ValidationComposite,
+  EmailValidation
+} from '../../../presentation/helpers/validators'
 import { type Validation } from '../../../presentation/protocols/validation'
-import { ValidationComposite } from '../../../presentation/helpers/validators/validation-composite'
 import { EmailValidatorAdapter } from '../../../utils/email-validator-adapter'
 
 export const makeSignUpValidation = (): Validation => {
