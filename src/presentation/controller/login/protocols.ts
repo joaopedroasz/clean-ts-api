@@ -1,5 +1,4 @@
 export * from '../../../domain/use-cases'
 export * from '../../protocols'
-export * from '../../protocols/email-validator'
-export * from '../../errors'
 export * from '../../helpers/http'
+export * from '../../helpers/validators/validation'
