@@ -9,7 +9,8 @@ export class ValidationComposite implements Validation {
 
   public validate (input: Record<string, unknown>): Error | undefined {
     for (const validation of this.validations) {
-      validation.validate(input)
+      const error = validation.validate(input)
+      if (error) return error
     }
   }
 }
