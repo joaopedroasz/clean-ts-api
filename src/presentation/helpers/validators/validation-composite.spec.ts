@@ -54,4 +54,17 @@ describe('Validation Composite', () => {
 
     expect(result).toBeUndefined()
   })
+
+  it('should return the first error if any validation fails', () => {
+    const { sut, anyValidation } = makeSut()
+    jest.spyOn(anyValidation, 'validate').mockReturnValueOnce(new Error('any_error'))
+    const input = {
+      any: 'any',
+      other: 'other'
+    }
+
+    const result = sut.validate(input)
+
+    expect(result).toEqual(new Error('any_error'))
+  })
 })
