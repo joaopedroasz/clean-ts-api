@@ -1,5 +1,17 @@
 import { SignUpController } from './signup'
-import { type EmailValidator, type AccountModel, type AddAccount, type AddAccountModel, type HttpRequest, type Validation, badRequest, MissingParamError, InvalidParamError, serverError, ServerError, success } from './protocols'
+import {
+  type EmailValidator,
+  type AccountModel,
+  type AddAccount,
+  type AddAccountModel,
+  type HttpRequest,
+  type Validation,
+  badRequest,
+  InvalidParamError,
+  serverError,
+  ServerError,
+  success
+} from './protocols'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -66,42 +78,6 @@ const makeSut = (): SutTypes => {
 }
 
 describe('SignUp Controller', () => {
-  it('should return 400 if no name is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = makeFakeRequest({ body: { name: undefined } })
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('name')))
-  })
-
-  it('should return 400 if no email is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = makeFakeRequest({ body: { email: undefined } })
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('email')))
-  })
-
-  it('should return 400 if no password is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = makeFakeRequest({ body: { password: undefined } })
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('password')))
-  })
-
-  it('should return 400 if no passwordConfirmation is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = makeFakeRequest({ body: { passwordConfirmation: undefined } })
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('passwordConfirmation')))
-  })
-
   it('should return 400 if password confirmation fails', async () => {
     const { sut } = makeSut()
     const httpRequest = makeFakeRequest({
