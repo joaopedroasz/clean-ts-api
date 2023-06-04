@@ -23,6 +23,6 @@ export class DbAuthentication implements Authentication {
     const isValidPassword = await this.hashCompare.compare({ plainText: password, hash: account.password })
     if (!isValidPassword) return undefined
 
-    await this.tokenGenerator.generate(account.id)
+    return await this.tokenGenerator.generate(account.id)
   }
 }
