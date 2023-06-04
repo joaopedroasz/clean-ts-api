@@ -1,6 +1,13 @@
-import { type AccountModel } from '../../../domain/models'
-import { type TokenGenerator, type HashCompare, type HashCompareInput, type LoadAccountByEmailRepository, type UpdateAccessTokenRepository, type UpdateAccessTokenInput } from '../../protocols'
-import { type AuthenticationModel } from '../add-account/protocols'
+import {
+  type AccountModel,
+  type AuthenticationModel,
+  type HashCompare,
+  type HashCompareInput,
+  type LoadAccountByEmailRepository,
+  type TokenGenerator,
+  type UpdateAccessTokenInput,
+  type UpdateAccessTokenRepository
+} from './protocols'
 import { DbAuthentication } from './db-authentication'
 
 const makeFakeAccount = (override?: Partial<AccountModel>): AccountModel => ({

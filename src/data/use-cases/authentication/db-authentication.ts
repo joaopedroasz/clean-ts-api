@@ -1,5 +1,11 @@
-import { type AuthenticationModel, type Authentication } from '../../../domain/use-cases'
-import { type TokenGenerator, type HashCompare, type LoadAccountByEmailRepository, type UpdateAccessTokenRepository } from '../../protocols'
+import {
+  type TokenGenerator,
+  type HashCompare,
+  type LoadAccountByEmailRepository,
+  type UpdateAccessTokenRepository,
+  type Authentication,
+  type AuthenticationModel
+} from './protocols'
 
 export class DbAuthentication implements Authentication {
   private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository
