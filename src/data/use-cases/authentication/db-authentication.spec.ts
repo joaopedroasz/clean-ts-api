@@ -57,4 +57,13 @@ describe('DbAuthentication UseCase', () => {
 
     await expect(promise).rejects.toThrowError(new Error('any_error'))
   })
+
+  it('should return undefined if LoadAccountByEmailRepository returns undefined', async () => {
+    const { loadAccountByEmailRepositoryStub, sut } = makeSut()
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(undefined)
+
+    const accessToken = await sut.auth(makeFakeAuthentication())
+
+    expect(accessToken).toBeUndefined()
+  })
 })
