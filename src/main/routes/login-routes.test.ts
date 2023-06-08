@@ -52,5 +52,14 @@ describe('Login Routes', () => {
 
       expect(response.statusCode).toBe(200)
     })
+
+    it('should return 401 if login an uncreated account', async () => {
+      const email = 'valid_email@mail.com'
+      const password = 'valid_password'
+
+      const response = await request(app).post('/api/login').send({ email, password })
+
+      expect(response.statusCode).toBe(401)
+    })
   })
 })
