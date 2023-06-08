@@ -1,12 +1,8 @@
 import { hash, compare } from 'bcrypt'
-import { type HashCompareInput, type HashCompare, type Hasher } from '../../data/protocols'
+import { type HashCompareInput, type HashCompare, type Hasher } from '../../../data/protocols'
 
 export class BcryptAdapter implements Hasher, HashCompare {
-  private readonly salt: number
-
-  constructor (salt: number) {
-    this.salt = salt
-  }
+  constructor (private readonly salt: number) {}
 
   public async compare (input: HashCompareInput): Promise<boolean> {
     return await compare(input.plainText, input.hash)

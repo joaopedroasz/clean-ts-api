@@ -7,11 +7,7 @@ export interface CompareFieldsValidationParams {
 }
 
 export class CompareFieldsValidation implements Validation {
-  private readonly fields: CompareFieldsValidationParams
-
-  constructor (fields: CompareFieldsValidationParams) {
-    this.fields = fields
-  }
+  constructor (private readonly fields: CompareFieldsValidationParams) {}
 
   public validate (input: Record<string, unknown>): Error | undefined {
     const { fieldName, fieldToCompareName } = this.fields
