@@ -19,7 +19,7 @@ services:
       - "3000:3000"
       - "9222:9222"
     volumes:
-      - ./dist:/app/dist
+      - ./dist/:/app/dist/
       - ./package.json:/app/package.json
     links:
       - mongo
