@@ -16,9 +16,11 @@ services:
     restart: always
     ports:
       - "3000:3000"
-    command: npm run start:prd
+      - "9222:9222"
+    command: npm run debug
     volumes:
       - ./dist:/app/dist
+      - ./package.json:/app/package.json
     links:
       - mongo
     depends_on:

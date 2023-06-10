@@ -8,7 +8,7 @@ export default (app: Application): void => {
   const routesPath = resolve(__dirname, '..', 'routes')
   readdirSync(routesPath).map(async file => {
     const routePath = resolve(routesPath, file)
-    if (!file.includes('.test.')) {
+    if (!file.includes('.test.') && !file.endsWith('.map')) {
       (await import(routePath)).default(router)
     }
   })
