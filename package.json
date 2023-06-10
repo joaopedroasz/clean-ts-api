@@ -13,7 +13,7 @@
     "prepare": "husky install",
     "build": "rimraf dist && tsc",
     "start:prd": "node dist/main/server.js",
-    "up": "docker-compose up -d",
+    "up": "yarn build && docker-compose up -d",
     "down": "docker-compose down"
   },
   "keywords": [],
