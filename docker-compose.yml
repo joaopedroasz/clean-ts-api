@@ -11,13 +11,13 @@ services:
 
   server:
     container_name: server-container
-    build: .
-    image: clean-server
+    image: node:16
+    working_dir: /app
+    command: bash -c "npm install && npm run debug"
     restart: always
     ports:
       - "3000:3000"
       - "9222:9222"
-    command: npm run debug
     volumes:
       - ./dist:/app/dist
       - ./package.json:/app/package.json
