@@ -8,3 +8,18 @@ services:
       - ./data:/data/db
     ports:
       - "27017:27017"
+
+  server:
+    container_name: server-container
+    build: .
+    image: clean-server
+    restart: always
+    ports:
+      - "3000:3000"
+    command: npm run start
+    volumes:
+      - ./dist:/app/dist
+    links:
+      - mongo
+    depends_on:
+      - mongo

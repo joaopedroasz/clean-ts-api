@@ -14,7 +14,7 @@
     "build": "rimraf dist && tsc",
     "start:prd": "node dist/main/server.js",
     "start:dev": "yarn db:start && sucrase-node src/main/server.ts",
-    "db:start": "docker-compose up -d",
+    "db:start": "docker-compose up -d mongo",
     "db:stop": "docker-compose down"
   },
   "keywords": [],
