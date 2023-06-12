@@ -6,13 +6,15 @@ import {
   badRequest,
   success,
   serverError,
-  type Validation
+  type Validation,
+  type Authentication
 } from './protocols'
 
 export class SignUpController implements Controller {
   constructor (
     private readonly addAccount: AddAccount,
-    private readonly validation: Validation
+    private readonly validation: Validation,
+    private readonly authentication: Authentication
   ) {}
 
   public async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -25,6 +27,7 @@ export class SignUpController implements Controller {
         name,
         password
       })
+      await this.authentication.auth({ email, password })
       return success(account)
     } catch (error) {
       return serverError(error as Error)
