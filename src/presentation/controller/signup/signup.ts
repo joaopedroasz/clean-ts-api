@@ -7,7 +7,9 @@ import {
   success,
   serverError,
   type Validation,
-  type Authentication
+  type Authentication,
+  forbidden,
+  EmailInUseError
 } from './protocols'
 
 export class SignUpController implements Controller {
@@ -22,14 +24,17 @@ export class SignUpController implements Controller {
       const error = this.validation.validate(httpRequest.body)
       if (error) return badRequest(error)
       const { password, email, name } = httpRequest.body
-      await this.addAccount.add({
+      const addedAccount = await this.addAccount.add({
         email,
         name,
         password
       })
+      if (!addedAccount) return forbidden(new EmailInUseError())
       const accessToken = await this.authentication.auth({ email, password })
       return success({ accessToken })
     } catch (error) {
+      console.log(error)
+
       return serverError(error as Error)
     }
   }

@@ -1,3 +1,4 @@
+export * from './email-in-use'
 export * from './invalid-param'
 export * from './missing-param'
 export * from './server'
