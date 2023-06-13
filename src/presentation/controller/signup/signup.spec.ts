@@ -10,7 +10,9 @@ import {
   ServerError,
   success,
   type Authentication,
-  type AuthenticationModel
+  type AuthenticationModel,
+  forbidden,
+  EmailInUseError
 } from './protocols'
 
 const makeAuthentication = (): Authentication => {
@@ -156,5 +158,16 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(serverError(new ServerError()))
+  })
+
+  it('should return 403 if AddAccount returns undefined', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(undefined)
+
+    const httpRequest = makeFakeRequest()
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })
 })
