@@ -2,7 +2,8 @@ import {
   type AddAccountRepository,
   type AccountModel,
   type AddAccountModel,
-  type Hasher
+  type Hasher,
+  type LoadAccountByEmailRepository
 } from './protocols'
 import { DbAddAccount } from './db-add-account'
 
@@ -24,6 +25,15 @@ const makeAddAccountRepository = (): AddAccountRepository => {
   return new AddAccountRepositoryStub()
 }
 
+const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
+  class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
+    async loadByEmail (email: string): Promise<AccountModel> {
+      return makeFakeAccount()
+    }
+  }
+  return new LoadAccountByEmailRepositoryStub()
+}
+
 const makeFakeAddAccountModel = (): AddAccountModel => ({
   name: 'valid_name',
   email: 'valid_email@mail.com',
@@ -41,21 +51,33 @@ interface SutTypes {
   sut: DbAddAccount
   hasherStub: Hasher
   addAccountRepositoryStub: AddAccountRepository
+  loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
 }
 
 const makeSut = (): SutTypes => {
   const hasherStub = makeHasher()
   const addAccountRepositoryStub = makeAddAccountRepository()
-  const sut = new DbAddAccount(hasherStub, addAccountRepositoryStub)
+  const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository()
+  const sut = new DbAddAccount(hasherStub, addAccountRepositoryStub, loadAccountByEmailRepositoryStub)
 
   return {
     sut,
     hasherStub,
-    addAccountRepositoryStub
+    addAccountRepositoryStub,
+    loadAccountByEmailRepositoryStub
   }
 }
 
 describe('DbAddAccountUseCase', () => {
+  it('should call LoadAccountByEmailRepository with correct email', async () => {
+    const { loadAccountByEmailRepositoryStub, sut } = makeSut()
+    const loadAccountSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
+
+    await sut.add(makeFakeAddAccountModel())
+
+    expect(loadAccountSpy).toHaveBeenCalledWith('valid_email@mail.com')
+  })
+
   it('should call Hasher with correct password', async () => {
     const { hasherStub, sut } = makeSut()
     const hashedSpy = jest.spyOn(hasherStub, 'hash')
