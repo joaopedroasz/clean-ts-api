@@ -1,7 +1,0 @@
-export * from '../../../domain/models'
-export * from '../../../domain/use-cases'
-export * from '../../protocols'
-export * from '../../errors'
-export * from '../../../validation/protocols/email-validator'
-export * from '../../helpers/http/http'
-export * from '../../protocols/validation'
