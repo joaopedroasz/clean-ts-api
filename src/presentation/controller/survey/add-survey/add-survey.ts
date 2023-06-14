@@ -5,7 +5,8 @@ import {
   type HttpResponse,
   badRequest,
   type AddSurvey,
-  serverError
+  serverError,
+  noContent
 } from './protocols'
 
 export class AddSurveyController implements Controller {
@@ -24,6 +25,7 @@ export class AddSurveyController implements Controller {
         answers,
         question
       })
+      return noContent()
     } catch (error) {
       return serverError(error as Error)
     }
