@@ -1,9 +1,14 @@
-import { forbidden, serverError, success } from '../helpers/http/http'
-import { AccessDeniedError } from '../errors'
 import { AuthMiddleware } from './auth-middleware'
-import { type AccountModel } from '../../domain/models'
-import { type LoadAccountByTokenModel, type LoadAccountByToken } from '../../domain/use-cases'
-import { type HttpRequest } from '../protocols'
+import {
+  type LoadAccountByToken,
+  type LoadAccountByTokenModel,
+  forbidden,
+  success,
+  serverError,
+  AccessDeniedError,
+  type HttpRequest,
+  type AccountModel
+} from './protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   headers: {
