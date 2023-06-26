@@ -83,4 +83,15 @@ describe('DbLoadAccountByToken UseCase', () => {
       role: 'any_role'
     })
   })
+
+  it('should return undefined if LoadAccountByTokenRepository returns undefined', async () => {
+    const { loadAccountByTokenStub, sut } = makeSut()
+    jest.spyOn(loadAccountByTokenStub, 'loadByToken').mockResolvedValueOnce(undefined)
+
+    const account = await sut.load({
+      token: 'any_token'
+    })
+
+    expect(account).toBeUndefined()
+  })
 })
