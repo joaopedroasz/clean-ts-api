@@ -117,5 +117,31 @@ describe('AccountMongoRepository', () => {
         accessToken: 'any_token'
       })
     })
+
+    it('should return on account on success with role', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        accessToken: 'any_token',
+        role: 'any_role'
+      })
+
+      const account = await sut.loadByToken({
+        token: 'any_token',
+        role: 'any_role'
+      })
+
+      expect(account).toBeTruthy()
+      expect(account).toEqual({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        id: expect.any(String),
+        accessToken: 'any_token',
+        role: 'any_role'
+      })
+    })
   })
 })
