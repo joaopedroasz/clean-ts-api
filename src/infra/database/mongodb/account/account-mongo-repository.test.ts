@@ -143,5 +143,15 @@ describe('AccountMongoRepository', () => {
         role: 'any_role'
       })
     })
+
+    it('should return undefined if loadByToken fails', async () => {
+      const sut = makeSut()
+
+      const account = await sut.loadByToken({
+        token: 'any_wrong_token'
+      })
+
+      expect(account).toBeUndefined()
+    })
   })
 })
