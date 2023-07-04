@@ -40,7 +40,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
 
   public async loadByToken ({ token, role }: LoadAccountByTokenModel): Promise<AccountModel | undefined> {
     const accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
-    const account = await accountCollection.findOne({ accessToken: token })
+    const account = await accountCollection.findOne({ accessToken: token, role })
     return MongoHelper.removeMongoId<AccountDocument>(account)
   }
 }
