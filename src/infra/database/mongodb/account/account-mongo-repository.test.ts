@@ -93,4 +93,29 @@ describe('AccountMongoRepository', () => {
       expect(account?.accessToken).toBe('any_token')
     })
   })
+
+  describe('loadByToken', () => {
+    it('should return on account on success without role', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        accessToken: 'any_token'
+      })
+
+      const account = await sut.loadByToken({
+        token: 'any_token'
+      })
+
+      expect(account).toBeTruthy()
+      expect(account).toEqual({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        id: expect.any(String),
+        accessToken: 'any_token'
+      })
+    })
+  })
 })
