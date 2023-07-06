@@ -24,7 +24,7 @@ describe('Survey Routes', () => {
   })
 
   describe('POST /surveys', () => {
-    it('should 204 on add survey success', async () => {
+    it('should return 403 on add survey anonymously', async () => {
       const response = await request(app).post('/api/surveys').send({
         question: 'any_question',
         answers: [{
@@ -35,7 +35,7 @@ describe('Survey Routes', () => {
         }]
       })
 
-      expect(response.statusCode).toBe(204)
+      expect(response.statusCode).toBe(403)
     })
   })
 })
