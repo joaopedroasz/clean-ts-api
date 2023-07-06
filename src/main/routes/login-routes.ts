@@ -4,11 +4,9 @@ import { makeSignUpController } from '../factories/controllers/account/signup/si
 import { makeLoginController } from '../factories/controllers/account/login/login-controller'
 
 export default (router: Router): void => {
-  router.post('/signup', async (req, res) => {
-    await adaptExpressRoute(makeSignUpController(), req, res)
-  })
+  const signUpRoute = adaptExpressRoute(makeSignUpController())
+  router.post('/signup', signUpRoute)
 
-  router.post('/login', async (req, res) => {
-    await adaptExpressRoute(makeLoginController(), req, res)
-  })
+  const loginRoute = adaptExpressRoute(makeLoginController())
+  router.post('/login', loginRoute)
 }
