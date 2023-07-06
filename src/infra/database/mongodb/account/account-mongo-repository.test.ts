@@ -153,5 +153,47 @@ describe('AccountMongoRepository', () => {
 
       expect(account).toBeUndefined()
     })
+
+    it('should return an account on loadByToken with if user is admin', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        accessToken: 'any_token',
+        role: 'admin'
+      })
+
+      const account = await sut.loadByToken({
+        token: 'any_token'
+      })
+
+      expect(account).toBeTruthy()
+      expect(account).toEqual({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        id: expect.any(String),
+        accessToken: 'any_token',
+        role: 'admin'
+      })
+    })
+
+    it('should return undefined if user is not admin', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        accessToken: 'any_token'
+      })
+
+      const account = await sut.loadByToken({
+        token: 'any_token',
+        role: 'admin'
+      })
+
+      expect(account).toBeUndefined()
+    })
   })
 })
