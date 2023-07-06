@@ -3,4 +3,4 @@ node_js:
   - 16
 script:
   - eslint 'src/**/*.ts'
-  - npm run coveralls
+  - npm run test:coveralls
