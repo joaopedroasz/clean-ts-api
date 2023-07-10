@@ -2,13 +2,15 @@ import {
   type LoadSurveys,
   type Controller,
   type HttpRequest,
-  type HttpResponse
+  type HttpResponse,
+  success
 } from './protocols'
 
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    await this.loadSurveys.load()
+    const surveys = await this.loadSurveys.load()
+    return success(surveys)
   }
 }
