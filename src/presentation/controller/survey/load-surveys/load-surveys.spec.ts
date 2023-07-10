@@ -1,7 +1,7 @@
 import MockDate from 'mockdate'
 
 import { LoadSurveysController } from './Load-surveys'
-import { type SurveyModel, type LoadSurveys } from './protocols'
+import { type SurveyModel, type LoadSurveys, success } from './protocols'
 
 const makeFakeSurvey = (): SurveyModel => ({
   id: 'any_id',
@@ -54,5 +54,13 @@ describe('LoadSurveys Controller', () => {
     await sut.handle({})
 
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  it('should return 200 on success', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(success([makeFakeSurvey()]))
   })
 })
