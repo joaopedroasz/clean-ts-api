@@ -3,14 +3,19 @@ import {
   type Controller,
   type HttpRequest,
   type HttpResponse,
-  success
+  success,
+  serverError
 } from './protocols'
 
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const surveys = await this.loadSurveys.load()
-    return success(surveys)
+    try {
+      const surveys = await this.loadSurveys.load()
+      return success(surveys)
+    } catch (error) {
+      return serverError(error as Error)
+    }
   }
 }
