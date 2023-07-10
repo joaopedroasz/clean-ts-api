@@ -1,4 +1,15 @@
-import { type Validation, type HttpRequest, type Controller, badRequest, type AddSurvey, type AddSurveyModel, serverError, noContent } from './protocols'
+import MockDate from 'mockdate'
+
+import {
+  type Validation,
+  type HttpRequest,
+  type Controller,
+  badRequest,
+  type AddSurvey,
+  type AddSurveyModel,
+  serverError,
+  noContent
+} from './protocols'
 import { AddSurveyController } from './add-survey'
 
 const makeFakeRequest = (override?: Partial<HttpRequest>): HttpRequest => ({
@@ -8,6 +19,7 @@ const makeFakeRequest = (override?: Partial<HttpRequest>): HttpRequest => ({
       image: 'any_image',
       answer: 'any_answer'
     }],
+    date: new Date(),
     ...override?.body
   }
 })
@@ -46,6 +58,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('AdSurvey Controller', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   it('should call Validation with correct values', async () => {
     const { sut, validationStub } = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')

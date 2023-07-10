@@ -11,7 +11,8 @@ const makeFakeSurvey = (): AddSurveyModel => ({
   }, {
     answer: 'other_answer',
     image: 'other_image'
-  }]
+  }],
+  date: new Date()
 })
 
 const makeSut = (): SurveyMongoRepository => {
