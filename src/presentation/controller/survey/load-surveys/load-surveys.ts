@@ -4,7 +4,8 @@ import {
   type HttpRequest,
   type HttpResponse,
   success,
-  serverError
+  serverError,
+  noContent
 } from './protocols'
 
 export class LoadSurveysController implements Controller {
@@ -13,6 +14,7 @@ export class LoadSurveysController implements Controller {
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const surveys = await this.loadSurveys.load()
+      if (!surveys.length) return noContent()
       return success(surveys)
     } catch (error) {
       return serverError(error as Error)
