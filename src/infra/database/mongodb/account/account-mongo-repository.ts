@@ -5,7 +5,7 @@ import {
   type UpdateAccessTokenRepository,
   type UpdateAccessTokenInput,
   type LoadAccountByTokenRepository,
-  type LoadAccountByTokenModel
+  type LoadAccountByTokenInput
 } from '../../../../data/protocols'
 import { type AccountModel } from '../../../../domain/models'
 import { type AddAccountModel } from '../../../../domain/use-cases'
@@ -38,7 +38,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     await accountCollection.updateOne({ _id: new ObjectId(id) }, { $set: { accessToken: token } })
   }
 
-  public async loadByToken ({ token, role }: LoadAccountByTokenModel): Promise<AccountModel | undefined> {
+  public async loadByToken ({ token, role }: LoadAccountByTokenInput): Promise<AccountModel | undefined> {
     const accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
     const account = await accountCollection.findOne({
       accessToken: token,
