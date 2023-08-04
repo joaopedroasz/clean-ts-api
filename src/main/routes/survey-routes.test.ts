@@ -76,4 +76,12 @@ describe('Survey Routes', () => {
       expect(response.statusCode).toBe(204)
     })
   })
+
+  describe('GET /surveys', () => {
+    it('should return 403 on load surveys anonymously', async () => {
+      const response = await request(app).get('/api/surveys')
+
+      expect(response.statusCode).toBe(403)
+    })
+  })
 })
