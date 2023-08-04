@@ -15,6 +15,18 @@ const makeFakeSurvey = (): AddSurveyModel => ({
   date: new Date()
 })
 
+const makeFakeSurveyDocument = (): SurveyDocument => ({
+  question: 'any_question',
+  answers: [{
+    image: 'any_image',
+    answer: 'any_answer'
+  }, {
+    answer: 'other_answer',
+    image: 'other_image'
+  }],
+  date: '2023-02-01T00:00:00.000Z'
+})
+
 const makeSut = (): SurveyMongoRepository => {
   return new SurveyMongoRepository()
 }
@@ -57,7 +69,7 @@ describe('survey-mongo-repository.test', () => {
 
   describe('load', () => {
     test('should load all surveys on success', async () => {
-      await surveyCollection.insertMany([makeFakeSurvey(), makeFakeSurvey()])
+      await surveyCollection.insertMany([makeFakeSurveyDocument(), makeFakeSurveyDocument()])
 
       const sut = makeSut()
 

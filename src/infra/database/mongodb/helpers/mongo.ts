@@ -1,8 +1,8 @@
 import { type Collection, MongoClient, type Document, type ObjectId } from 'mongodb'
 
-type DataWithMongoId<Data> = { _id: ObjectId } & Data
+export type DataWithMongoId<Data> = { _id: ObjectId } & Data
 
-type DataWithId<Data> = { id: string } & Omit<Data, '_id'>
+export type DataWithId<Data> = { id: string } & Omit<Data, '_id'>
 
 export const MongoHelper = {
   client: undefined as unknown as MongoClient | undefined,
