@@ -68,5 +68,14 @@ describe('survey-mongo-repository.test', () => {
       expect(surveys[0].question).toBe('any_question')
       expect(surveys[1].question).toBe('any_question')
     })
+
+    test('should load empty list', async () => {
+      const sut = makeSut()
+
+      const surveys = await sut.load()
+
+      expect(surveys).toBeTruthy()
+      expect(surveys).toHaveLength(0)
+    })
   })
 })

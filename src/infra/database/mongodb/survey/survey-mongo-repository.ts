@@ -11,6 +11,7 @@ export interface AnswerDocument {
 export interface SurveyDocument {
   question: string
   answers: AnswerDocument[]
+  date: Date
 }
 
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository {
