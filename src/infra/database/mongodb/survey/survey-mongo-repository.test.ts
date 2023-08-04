@@ -54,4 +54,19 @@ describe('survey-mongo-repository.test', () => {
       }])
     })
   })
+
+  describe('load', () => {
+    test('should load all surveys on success', async () => {
+      await surveyCollection.insertMany([makeFakeSurvey(), makeFakeSurvey()])
+
+      const sut = makeSut()
+
+      const surveys = await sut.load()
+
+      expect(surveys).toBeTruthy()
+      expect(surveys).toHaveLength(2)
+      expect(surveys[0].question).toBe('any_question')
+      expect(surveys[1].question).toBe('any_question')
+    })
+  })
 })
