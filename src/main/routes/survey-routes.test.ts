@@ -2,12 +2,12 @@ import { type Collection } from 'mongodb'
 import request from 'supertest'
 import { sign } from 'jsonwebtoken'
 
-import app from '../config/app'
-import { MongoHelper } from '../../infra/database/mongodb/helpers'
-import { type AccountDocument } from '../../infra/database/mongodb/account/account-mongo-repository'
-import { type SurveyDocument } from '../../infra/database/mongodb/survey/survey-mongo-repository'
-import { type AccountModel } from '../../domain/models'
-import env from '../config/env'
+import { type AccountModel } from '@/domain/models'
+import { MongoHelper } from '@/infra/database/mongodb/helpers'
+import { type AccountDocument } from '@/infra/database/mongodb/account/account-mongo-repository'
+import { type SurveyDocument } from '@/infra/database/mongodb/survey/survey-mongo-repository'
+import app from '@main/config/app'
+import env from '@main/config/env'
 
 const makeFakeAccountModel = (): AccountModel => ({
   id: 'valid_id',

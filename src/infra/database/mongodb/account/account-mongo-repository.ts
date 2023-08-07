@@ -1,4 +1,7 @@
 import { ObjectId } from 'mongodb'
+
+import { type AccountModel } from '@/domain/models'
+import { type AddAccountModel } from '@/domain/use-cases'
 import {
   type LoadAccountByEmailRepository,
   type AddAccountRepository,
@@ -6,9 +9,7 @@ import {
   type UpdateAccessTokenInput,
   type LoadAccountByTokenRepository,
   type LoadAccountByTokenInput
-} from '../../../../data/protocols'
-import { type AccountModel } from '../../../../domain/models'
-import { type AddAccountModel } from '../../../../domain/use-cases'
+} from '@/data/protocols'
 import { MongoHelper } from '../helpers'
 
 export interface AccountDocument {

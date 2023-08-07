@@ -1,6 +1,6 @@
-import { type LoadSurveysRepository, type AddSurveyRepository } from '../../../../data/protocols'
-import { type SurveyModel } from '../../../../domain/models'
-import { type AddSurveyModel } from '../../../../domain/use-cases'
+import { type SurveyModel } from '@/domain/models'
+import { type AddSurveyModel } from '@/domain/use-cases'
+import { type LoadSurveysRepository, type AddSurveyRepository } from '@/data/protocols'
 import { type DataWithMongoId, MongoHelper } from '../helpers'
 
 export interface AnswerDocument {

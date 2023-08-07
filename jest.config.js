@@ -8,5 +8,10 @@ module.exports = {
     '^.+\\.(t|j)sx?$': '@swc/jest'
   },
   roots: ['<rootDir>/src'],
-  preset: '@shelf/jest-mongodb'
+  preset: '@shelf/jest-mongodb',
+  moduleNameMapper: {
+    '@/(.*)': '<rootDir>/src/$1',
+    '@main/(.*)': '<rootDir>/src/main/$1',
+    '@factories/(.*)': '<rootDir>/src/main/factories/$1'
+  }
 }

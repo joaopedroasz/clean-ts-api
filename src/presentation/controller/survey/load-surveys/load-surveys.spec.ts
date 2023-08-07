@@ -1,6 +1,6 @@
 import MockDate from 'mockdate'
 
-import { LoadSurveysController } from './Load-surveys'
+import { LoadSurveysController } from './load-surveys'
 import { type SurveyModel, type LoadSurveys, success, serverError, noContent } from './protocols'
 
 const makeFakeSurvey = (): SurveyModel => ({

@@ -2,9 +2,9 @@ import { type Collection } from 'mongodb'
 import request from 'supertest'
 import { hash } from 'bcrypt'
 
-import app from '../config/app'
-import { MongoHelper } from '../../infra/database/mongodb/helpers'
-import { type AccountDocument } from '../../infra/database/mongodb/account/account-mongo-repository'
+import app from '@main/config/app'
+import { MongoHelper } from '@/infra/database/mongodb/helpers'
+import { type AccountDocument } from '@/infra/database/mongodb/account/account-mongo-repository'
 
 describe('Login Routes', () => {
   let accountCollection: Collection<AccountDocument>

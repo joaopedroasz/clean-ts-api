@@ -6,8 +6,13 @@
     "esModuleInterop": true,
     "strict": true,
     "sourceMap": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"],
+      "@main/*": ["main/*"],
+      "@factories/*": ["main/factories/*"]
+    }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"]
+  "include": ["src"]
 }
