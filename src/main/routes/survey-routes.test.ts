@@ -18,6 +18,7 @@ const makeFakeAccountModel = (): AccountModel => ({
 
 describe('Survey Routes', () => {
   let surveyCollection: Collection<AccountDocument>
+  let accountCollection: Collection<AccountDocument>
 
   const MONGO_URL = process.env.MONGO_URL ?? 'any_url'
 
@@ -32,6 +33,9 @@ describe('Survey Routes', () => {
   beforeEach(async () => {
     surveyCollection = await MongoHelper.getCollection<AccountDocument>('surveys')
     await surveyCollection.deleteMany({})
+
+    accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
+    await accountCollection.deleteMany({})
   })
 
   describe('POST /surveys', () => {
@@ -50,7 +54,6 @@ describe('Survey Routes', () => {
     })
 
     it('should return 204 on add survey with valid accessToken', async () => {
-      const accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
       const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
 
       const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
@@ -85,7 +88,6 @@ describe('Survey Routes', () => {
     })
 
     it('should return 204 on load surveys with valid accessToken', async () => {
-      const accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
       const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
 
       const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
