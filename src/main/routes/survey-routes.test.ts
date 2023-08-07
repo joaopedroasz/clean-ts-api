@@ -23,6 +23,22 @@ describe('Survey Routes', () => {
 
   const MONGO_URL = process.env.MONGO_URL ?? 'any_url'
 
+  const makeAccessToken = async (): Promise<string> => {
+    const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
+
+    const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
+
+    await accountCollection.updateOne({
+      _id: insertedId
+    }, {
+      $set: {
+        accessToken
+      }
+    })
+
+    return accessToken
+  }
+
   beforeAll(async () => {
     await MongoHelper.connect(MONGO_URL)
   })
@@ -55,17 +71,7 @@ describe('Survey Routes', () => {
     })
 
     it('should return 204 on add survey with valid accessToken', async () => {
-      const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
-
-      const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
-
-      await accountCollection.updateOne({
-        _id: insertedId
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+      const accessToken = await makeAccessToken()
 
       const response = await request(app).post('/api/surveys').set('x-access-token', accessToken).send({
         question: 'any_question',
@@ -89,17 +95,7 @@ describe('Survey Routes', () => {
     })
 
     it('should return 204 on load surveys with valid accessToken', async () => {
-      const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
-
-      const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
-
-      await accountCollection.updateOne({
-        _id: insertedId
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+      const accessToken = await makeAccessToken()
 
       const response = await request(app).get('/api/surveys').set('x-access-token', accessToken)
 
@@ -107,18 +103,6 @@ describe('Survey Routes', () => {
     })
 
     it('should return 200 on load surveys with valid accessToken and surveys', async () => {
-      const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
-
-      const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
-
-      await accountCollection.updateOne({
-        _id: insertedId
-      }, {
-        $set: {
-          accessToken
-        }
-      })
-
       await surveyCollection.insertMany([{
         question: 'any_question',
         answers: [{
@@ -138,6 +122,8 @@ describe('Survey Routes', () => {
         }],
         date: '2023-02-01'
       }])
+
+      const accessToken = await makeAccessToken()
 
       const response = await request(app).get('/api/surveys').set('x-access-token', accessToken)
 
