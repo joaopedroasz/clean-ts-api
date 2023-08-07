@@ -83,5 +83,24 @@ describe('Survey Routes', () => {
 
       expect(response.statusCode).toBe(403)
     })
+
+    it('should return 204 on load surveys with valid accessToken', async () => {
+      const accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
+      const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
+
+      const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
+
+      await accountCollection.updateOne({
+        _id: insertedId
+      }, {
+        $set: {
+          accessToken
+        }
+      })
+
+      const response = await request(app).get('/api/surveys').set('x-access-token', accessToken)
+
+      expect(response.statusCode).toBe(204)
+    })
   })
 })
