@@ -5,6 +5,7 @@ import { sign } from 'jsonwebtoken'
 import app from '../config/app'
 import { MongoHelper } from '../../infra/database/mongodb/helpers'
 import { type AccountDocument } from '../../infra/database/mongodb/account/account-mongo-repository'
+import { type SurveyDocument } from '../../infra/database/mongodb/survey/survey-mongo-repository'
 import { type AccountModel } from '../../domain/models'
 import env from '../config/env'
 
@@ -17,7 +18,7 @@ const makeFakeAccountModel = (): AccountModel => ({
 })
 
 describe('Survey Routes', () => {
-  let surveyCollection: Collection<AccountDocument>
+  let surveyCollection: Collection<SurveyDocument>
   let accountCollection: Collection<AccountDocument>
 
   const MONGO_URL = process.env.MONGO_URL ?? 'any_url'
@@ -31,7 +32,7 @@ describe('Survey Routes', () => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection<AccountDocument>('surveys')
+    surveyCollection = await MongoHelper.getCollection<SurveyDocument>('surveys')
     await surveyCollection.deleteMany({})
 
     accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
@@ -103,6 +104,65 @@ describe('Survey Routes', () => {
       const response = await request(app).get('/api/surveys').set('x-access-token', accessToken)
 
       expect(response.statusCode).toBe(204)
+    })
+
+    it('should return 200 on load surveys with valid accessToken and surveys', async () => {
+      const { insertedId } = await accountCollection.insertOne(makeFakeAccountModel())
+
+      const accessToken = sign({ id: insertedId.toHexString() }, env.JWT_SECRET)
+
+      await accountCollection.updateOne({
+        _id: insertedId
+      }, {
+        $set: {
+          accessToken
+        }
+      })
+
+      await surveyCollection.insertMany([{
+        question: 'any_question',
+        answers: [{
+          image: 'any_image',
+          answer: 'any_answer'
+        }, {
+          answer: 'other_answer'
+        }],
+        date: '2023-02-01'
+      }, {
+        question: 'other_question',
+        answers: [{
+          image: 'other_image',
+          answer: 'other_answer'
+        }, {
+          answer: 'other_answer'
+        }],
+        date: '2023-02-01'
+      }])
+
+      const response = await request(app).get('/api/surveys').set('x-access-token', accessToken)
+
+      expect(response.statusCode).toBe(200)
+      expect(response.body).toEqual([{
+        id: expect.any(String),
+        question: 'any_question',
+        answers: [{
+          image: 'any_image',
+          answer: 'any_answer'
+        }, {
+          answer: 'other_answer'
+        }],
+        date: '2023-02-01T00:00:00.000Z'
+      }, {
+        id: expect.any(String),
+        question: 'other_question',
+        answers: [{
+          image: 'other_image',
+          answer: 'other_answer'
+        }, {
+          answer: 'other_answer'
+        }],
+        date: '2023-02-01T00:00:00.000Z'
+      }])
     })
   })
 })
