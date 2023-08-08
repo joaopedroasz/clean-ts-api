@@ -12,7 +12,7 @@ import {
 } from '@/data/protocols'
 import { MongoHelper } from '../helpers'
 
-export interface AccountDocument {
+export type AccountDocument = {
   name: string
   email: string
   password: string

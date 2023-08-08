@@ -1,7 +1,7 @@
 import { InvalidParamError } from '@/presentation/errors'
 import { type Validation } from '@/presentation/protocols/validation'
 
-export interface CompareFieldsValidationParams {
+export type CompareFieldsValidationParams = {
   fieldName: string
   fieldToCompareName: string
 }

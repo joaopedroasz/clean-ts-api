@@ -1,4 +1,4 @@
-export interface HashCompareInput {
+export type HashCompareInput = {
   plainText: string
   hash: string
 }

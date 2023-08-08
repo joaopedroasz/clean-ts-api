@@ -1,6 +1,6 @@
 import { type AccountModel } from '@/domain/models'
 
-export interface LoadAccountByTokenInput {
+export type LoadAccountByTokenInput = {
   token: string
   role?: string
 }

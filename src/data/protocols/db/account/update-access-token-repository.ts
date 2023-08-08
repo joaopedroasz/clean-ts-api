@@ -1,4 +1,4 @@
-export interface UpdateAccessTokenInput {
+export type UpdateAccessTokenInput = {
   id: string
   token: string
 }

@@ -3,12 +3,12 @@ import { type AddSurveyModel } from '@/domain/use-cases'
 import { type LoadSurveysRepository, type AddSurveyRepository } from '@/data/protocols'
 import { type DataWithMongoId, MongoHelper } from '../helpers'
 
-export interface AnswerDocument {
+export type AnswerDocument = {
   answer: string
   image?: string
 }
 
-export interface SurveyDocument {
+export type SurveyDocument = {
   question: string
   answers: AnswerDocument[]
   date: string
