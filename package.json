@@ -62,6 +62,8 @@
     "node": ">=16.0.0"
   },
   "_moduleAliases": {
-    "@": "dist"
+    "@": "dist",
+    "@main": "dist/main",
+    "@factories": "dist/main/factories"
   }
 }
