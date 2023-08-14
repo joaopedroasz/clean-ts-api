@@ -1,8 +1,9 @@
+import { ObjectId } from 'mongodb'
+
 import { type SurveyModel } from '@/domain/models'
 import { type AddSurveyModel } from '@/domain/use-cases'
 import { type LoadSurveysRepository, type AddSurveyRepository, type LoadSurveyByIdRepository } from '@/data/protocols'
 import { type DataWithMongoId, MongoHelper } from '../helpers'
-import { ObjectId } from 'mongodb'
 
 export type AnswerDocument = {
   answer: string
@@ -40,9 +41,10 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     return surveys.map(this.mapToModel)
   }
 
-  public async loadById (id: string): Promise<SurveyModel> {
+  public async loadById (id: string): Promise<SurveyModel | undefined> {
     const surveyCollection = await MongoHelper.getCollection<SurveyDocument>(this.collectionName)
     const survey = await surveyCollection.findOne({ _id: new ObjectId(id) })
+    if (!survey) return undefined
     return this.mapToModel(survey)
   }
 }

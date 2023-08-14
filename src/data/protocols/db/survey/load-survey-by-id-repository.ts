@@ -1,5 +1,5 @@
 import { type SurveyModel } from '@/domain/models'
 
 export interface LoadSurveyByIdRepository {
-  loadById: (id: string) => Promise<SurveyModel>
+  loadById: (id: string) => Promise<SurveyModel | undefined>
 }
