@@ -1,4 +1,4 @@
-import { type Collection } from 'mongodb'
+import { ObjectId, type Collection } from 'mongodb'
 
 import { MongoHelper } from '../helpers'
 import { SurveyMongoRepository, type SurveyDocument } from './survey-mongo-repository'
@@ -103,6 +103,15 @@ describe('survey-mongo-repository.test', () => {
 
       expect(survey).toBeTruthy()
       expect(survey?.id).toBeTruthy()
+    })
+
+    test('should return undefined if survey does not exists', async () => {
+      const sut = makeSut()
+      const nonexistentSurveyId = new ObjectId().toHexString()
+
+      const survey = await sut.loadById(nonexistentSurveyId)
+
+      expect(survey).toBeUndefined()
     })
   })
 })
