@@ -44,6 +44,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
       upsert: true,
       returnDocument: 'after'
     })
+    if (!value) throw new Error('Error on save survey result')
     return this.mapToModel(value)
   }
 }
