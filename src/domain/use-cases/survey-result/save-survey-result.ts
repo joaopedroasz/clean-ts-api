@@ -1,4 +1,4 @@
-import { type SurveyResultModel } from '../models'
+import { type SurveyResultModel } from '../../models'
 
 export type SaveSurveyResultModel = Omit<SurveyResultModel, 'id'>
 
