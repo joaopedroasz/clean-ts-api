@@ -8,7 +8,7 @@ import {
 export class SaveSurveyResultController implements Controller {
   constructor (private readonly loadSurveyById: LoadSurveyById) {}
 
-  public async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    await this.loadSurveyById.loadById(httpRequest.params.surveyId)
+  public async handle ({ params: { surveyId } }: HttpRequest): Promise<HttpResponse> {
+    await this.loadSurveyById.loadById(surveyId)
   }
 }
