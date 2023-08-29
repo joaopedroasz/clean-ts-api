@@ -161,4 +161,19 @@ describe('SaveSurveyResult Controller', () => {
 
     expect(httpResponse).toEqual(success(makeFakeSurveyResult()))
   })
+
+  it('should return 403 if no account id provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      params: {
+        surveyId: 'any_survey_id'
+      },
+      body: {
+        answer: 'any_answer'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('accountId')))
+  })
 })
