@@ -10,7 +10,8 @@ import {
   serverError,
   type SaveSurveyResult,
   type SaveSurveyResultModel,
-  type SurveyResultModel
+  type SurveyResultModel,
+  success
 } from './protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -151,5 +152,13 @@ describe('SaveSurveyResult Controller', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('should return 200 on success', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(success(makeFakeSurveyResult()))
   })
 })
