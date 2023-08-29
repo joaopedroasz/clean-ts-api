@@ -6,7 +6,8 @@ import {
   forbidden,
   InvalidParamError,
   serverError,
-  type SaveSurveyResult
+  type SaveSurveyResult,
+  success
 } from './protocols'
 
 export class SaveSurveyResultController implements Controller {
@@ -22,7 +23,8 @@ export class SaveSurveyResultController implements Controller {
       const answers = survey.answers.map(({ answer }) => answer)
       const providedAnswerWasLoaded = answers.includes(answer)
       if (!providedAnswerWasLoaded) return forbidden(new InvalidParamError('answer'))
-      await this.saveSurveyResult.save({ accountId, surveyId, answer, date: new Date() })
+      const savedResult = await this.saveSurveyResult.save({ accountId, surveyId, answer, date: new Date() })
+      return success(savedResult)
     } catch (error) {
       return serverError(error as Error)
     }
