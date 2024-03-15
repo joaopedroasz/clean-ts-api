@@ -1,35 +1,10 @@
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 import {
-  type AccountModel,
   type Decrypter,
-  type LoadAccountByTokenRepository,
-  type LoadAccountByTokenInput
+  type LoadAccountByTokenRepository
 } from './protocols'
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid_id',
-  email: 'valid_email',
-  name: 'valid_name',
-  password: 'hashed_password'
-})
-
-const makeDecrypter = (): Decrypter => {
-  class DecrypterStub implements Decrypter {
-    async decrypt (value: string): Promise<string> {
-      return 'any_value'
-    }
-  }
-  return new DecrypterStub()
-}
-
-const makeLoadAccountByToken = (): LoadAccountByTokenRepository => {
-  class LoadAccountByTokenStub implements LoadAccountByTokenRepository {
-    async loadByToken (data: LoadAccountByTokenInput): Promise<AccountModel | undefined> {
-      return makeFakeAccount()
-    }
-  }
-  return new LoadAccountByTokenStub()
-}
+import { mockAccountModel } from '@/domain/test'
+import { mockDecrypter, mockLoadAccountByToken } from '@/data/test'
 
 type SutTypes = {
   sut: DbLoadAccountByToken
@@ -38,8 +13,8 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const decrypterStub = makeDecrypter()
-  const loadAccountByTokenStub = makeLoadAccountByToken()
+  const decrypterStub = mockDecrypter()
+  const loadAccountByTokenStub = mockLoadAccountByToken()
   const sut = new DbLoadAccountByToken(decrypterStub, loadAccountByTokenStub)
 
   return {
@@ -106,7 +81,7 @@ describe('DbLoadAccountByToken UseCase', () => {
       role: 'any_role'
     })
 
-    expect(account).toEqual(makeFakeAccount())
+    expect(account).toEqual(mockAccountModel())
   })
 
   it('should throw if Decrypter throws', async () => {
@@ -117,7 +92,7 @@ describe('DbLoadAccountByToken UseCase', () => {
       token: 'any_token'
     })
 
-    await expect(promise).rejects.toThrowError(new Error())
+    await expect(promise).rejects.toThrow(new Error())
   })
 
   it('should throw if LoadAccountByTokenRepository throws', async () => {
@@ -128,6 +103,6 @@ describe('DbLoadAccountByToken UseCase', () => {
       token: 'any_token'
     })
 
-    await expect(promise).rejects.toThrowError(new Error())
+    await expect(promise).rejects.toThrow(new Error())
   })
 })

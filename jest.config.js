@@ -2,7 +2,14 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!<rootDir>/src/main/**', '!<rootDir>/src/**/*protocols.ts', '!**/protocols/**', '!**/**/index.ts'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/main/**',
+    '!<rootDir>/src/**/*protocols.ts',
+    '!**/protocols/**',
+    '!**/**/index.ts',
+    '!**/test/**'
+  ],
   testEnvironment: 'node',
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest'
