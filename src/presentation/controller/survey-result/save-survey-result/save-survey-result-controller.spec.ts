@@ -124,7 +124,8 @@ describe('SaveSurveyResult Controller', () => {
       },
       body: {
         answer: 'wrong_answer'
-      }
+      },
+      accountId: 'any_account_id'
     }
     const httpResponse = await sut.handle(httpRequest)
 
