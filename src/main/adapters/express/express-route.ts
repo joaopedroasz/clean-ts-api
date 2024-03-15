@@ -3,7 +3,7 @@ import { type Response, type Request, type RequestHandler } from 'express'
 import { type Controller, type HttpRequest } from '@/presentation/protocols'
 
 export const adaptExpressRoute = (controller: Controller): RequestHandler => {
-  return async (req: Request, res: Response) => {
+  return async (req: Request, res: Response): Promise<void> => {
     const httpRequest: HttpRequest = {
       body: req.body
     }
@@ -14,7 +14,7 @@ export const adaptExpressRoute = (controller: Controller): RequestHandler => {
       return
     }
     res.status(httpResponse.statusCode).json({
-      error: httpResponse.body.message
+      error: httpResponse.body?.message
     })
     res.end()
   }

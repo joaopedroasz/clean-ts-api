@@ -21,9 +21,10 @@ export class SignUpController implements Controller {
 
   public async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      if (!httpRequest.body) return badRequest(new Error('Missing body'))
       const error = this.validation.validate(httpRequest.body)
       if (error) return badRequest(error)
-      const { password, email, name } = httpRequest.body
+      const { password, email, name } = httpRequest.body as { password: string, email: string, name: string }
       const addedAccount = await this.addAccount.add({
         email,
         name,

@@ -1,9 +1,9 @@
-import { type Request, type Response, type NextFunction } from 'express'
+import { type Request, type Response, type NextFunction, type RequestHandler } from 'express'
 
 import { type HttpRequest, type Middleware } from '@/presentation/protocols'
 
-export const adaptExpressMiddleware = (middleware: Middleware) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+export const adaptExpressMiddleware = (middleware: Middleware): RequestHandler => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const request: HttpRequest = {
       headers: req.headers
     }
@@ -14,7 +14,7 @@ export const adaptExpressMiddleware = (middleware: Middleware) => {
       return
     }
     res.status(httpResponse.statusCode).json({
-      error: httpResponse.body.message
+      error: httpResponse.body?.message
     })
     res.end()
   }

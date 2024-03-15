@@ -18,10 +18,11 @@ export class LoginController implements Controller {
 
   public async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const validationError = this.validation.validate(httpRequest.body)
+      const body = httpRequest.body as { email: string, password: string }
+      const validationError = this.validation.validate(body)
       if (validationError) return badRequest(validationError)
 
-      const { email, password } = httpRequest.body
+      const { email, password } = httpRequest.body as { email: string, password: string }
       const accessToken = await this.authentication.auth({ email, password })
       if (!accessToken) return unauthorized()
 

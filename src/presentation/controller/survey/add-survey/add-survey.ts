@@ -17,10 +17,11 @@ export class AddSurveyController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      if (!httpRequest.body) return badRequest(new Error('Missing body'))
       const validationError = this.validation.validate(httpRequest.body)
       if (validationError) return badRequest(validationError)
 
-      const { question, answers } = httpRequest.body
+      const { question, answers } = httpRequest.body as { question: string, answers: Array<{ image: string, answer: string }> }
       await this.addSurvey.add({
         answers,
         question,

@@ -1,11 +1,11 @@
 export type HttpResponse = {
   statusCode: number
-  body: any
+  body?: Record<string, unknown> | Error
 }
 
 export type HttpRequest = {
-  body?: any
-  headers?: any
-  params?: any
+  body?: Record<string, unknown>
+  headers?: Record<string, unknown>
+  params?: Record<string, unknown>
   accountId?: string
 }
