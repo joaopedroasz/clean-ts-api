@@ -16,7 +16,7 @@ export const MongoHelper = {
     MongoHelper.client = undefined
   },
   getCollection: async <CollectionType extends Document>(name: string): Promise<Collection<CollectionType>> => {
-    if (!MongoHelper.client) MongoHelper.client = await MongoClient.connect(MongoHelper.uri as string)
+    if (!MongoHelper.client) MongoHelper.client = await MongoClient.connect(MongoHelper.uri as unknown as string)
     return MongoHelper.client.db().collection(name)
   },
   removeMongoId: <T>(collection: DataWithMongoId<T>): DataWithId<T> => {
