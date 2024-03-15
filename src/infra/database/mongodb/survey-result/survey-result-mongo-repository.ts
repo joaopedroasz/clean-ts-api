@@ -35,7 +35,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
 
   public async save ({ answer, date, accountId, surveyId }: SaveSurveyResultModel): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection<SurveyResultDocument>(this.collectionName)
-    const { value } = await surveyResultCollection.findOneAndUpdate({
+    const surveyResult = await surveyResultCollection.findOneAndUpdate({
       surveyId: new ObjectId(surveyId),
       accountId: new ObjectId(accountId)
     }, {
@@ -44,7 +44,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
       upsert: true,
       returnDocument: 'after'
     })
-    if (!value) throw new Error('Error on save survey result')
-    return this.mapToModel(value)
+    if (!surveyResult) throw new Error('Error on save survey result')
+    return this.mapToModel(surveyResult)
   }
 }
