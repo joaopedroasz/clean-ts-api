@@ -1,7 +1,7 @@
 import { LoginController } from './login'
 import {
   type Authentication,
-  type AuthenticationModel,
+  type AuthenticationParams,
   type HttpRequest,
   badRequest,
   serverError,
@@ -12,7 +12,7 @@ import {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    public async auth (authentication: AuthenticationModel): Promise<string> {
+    public async auth (authentication: AuthenticationParams): Promise<string> {
       return 'any_token'
     }
   }

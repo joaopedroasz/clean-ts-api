@@ -6,7 +6,7 @@ import {
   type Controller,
   badRequest,
   type AddSurvey,
-  type AddSurveyModel,
+  type AddSurveyParams,
   serverError,
   noContent
 } from './protocols'
@@ -35,7 +35,7 @@ const makeValidation = (): Validation => {
 
 const makeAddSurvey = (): AddSurvey => {
   class AddSurveyStub implements AddSurvey {
-    async add (data: AddSurveyModel): Promise<void> {}
+    async add (data: AddSurveyParams): Promise<void> {}
   }
   return new AddSurveyStub()
 }

@@ -2,7 +2,7 @@ import { SignUpController } from './signup'
 import {
   type AccountModel,
   type AddAccount,
-  type AddAccountModel,
+  type AddAccountParams,
   type HttpRequest,
   type Validation,
   badRequest,
@@ -10,14 +10,14 @@ import {
   ServerError,
   success,
   type Authentication,
-  type AuthenticationModel,
+  type AuthenticationParams,
   forbidden,
   EmailInUseError
 } from './protocols'
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    public async auth (authentication: AuthenticationModel): Promise<string> {
+    public async auth (authentication: AuthenticationParams): Promise<string> {
       return 'any_token'
     }
   }
@@ -26,7 +26,7 @@ const makeAuthentication = (): Authentication => {
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountParams): Promise<AccountModel> {
       return makeFakeAccount()
     }
   }

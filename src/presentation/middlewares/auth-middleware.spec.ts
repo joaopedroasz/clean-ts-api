@@ -1,7 +1,7 @@
 import { AuthMiddleware } from './auth-middleware'
 import {
   type LoadAccountByToken,
-  type LoadAccountByTokenModel,
+  type LoadAccountByTokenParams,
   forbidden,
   success,
   serverError,
@@ -25,7 +25,7 @@ const makeFakeAccount = (): AccountModel => ({
 
 const makeLoadAccountByToken = (): LoadAccountByToken => {
   class LoadAccountByTokenStub implements LoadAccountByToken {
-    async load (data: LoadAccountByTokenModel): Promise<AccountModel | undefined> {
+    async load (data: LoadAccountByTokenParams): Promise<AccountModel | undefined> {
       return makeFakeAccount()
     }
   }

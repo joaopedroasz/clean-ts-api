@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 import { type AccountModel } from '@/domain/models'
-import { type AddAccountModel } from '@/domain/use-cases'
+import { type AddAccountParams } from '@/domain/use-cases'
 import {
   type LoadAccountByEmailRepository,
   type AddAccountRepository,
@@ -23,7 +23,7 @@ export type AccountDocument = {
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository, LoadAccountByTokenRepository {
   private readonly collectionName = 'accounts'
 
-  public async add (accountData: AddAccountModel): Promise<AccountModel> {
+  public async add (accountData: AddAccountParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection<AccountDocument>(this.collectionName)
     const { insertedId } = await accountCollection.insertOne(accountData)
     return MongoHelper.removeMongoId<AccountDocument>({ ...accountData, _id: insertedId })

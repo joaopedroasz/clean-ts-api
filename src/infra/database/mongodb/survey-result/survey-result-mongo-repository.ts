@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 import { type SurveyResultModel } from '@/domain/models'
-import { type SaveSurveyResultModel } from '@/domain/use-cases'
+import { type SaveSurveyResultParams } from '@/domain/use-cases'
 import { type SaveSurveyResultRepository } from '@/data/protocols'
 import { type DataWithMongoId, MongoHelper } from '../helpers'
 
@@ -24,7 +24,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
     })
   }
 
-  private mapToDocument (surveyResult: SaveSurveyResultModel): SurveyResultDocument {
+  private mapToDocument (surveyResult: SaveSurveyResultParams): SurveyResultDocument {
     return {
       ...surveyResult,
       accountId: new ObjectId(surveyResult.accountId),
@@ -33,7 +33,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
     }
   }
 
-  public async save ({ answer, date, accountId, surveyId }: SaveSurveyResultModel): Promise<SurveyResultModel> {
+  public async save ({ answer, date, accountId, surveyId }: SaveSurveyResultParams): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection<SurveyResultDocument>(this.collectionName)
     const surveyResult = await surveyResultCollection.findOneAndUpdate({
       surveyId: new ObjectId(surveyId),

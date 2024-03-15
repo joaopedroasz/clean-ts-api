@@ -1,6 +1,6 @@
 import {
   type AccountModel,
-  type AuthenticationModel,
+  type AuthenticationParams,
   type HashCompare,
   type HashCompareInput,
   type LoadAccountByEmailRepository,
@@ -18,7 +18,7 @@ const makeFakeAccount = (override?: Partial<AccountModel>): AccountModel => ({
   ...override
 })
 
-const makeFakeAuthentication = (override?: Partial<AuthenticationModel>): AuthenticationModel => ({
+const makeFakeAuthentication = (override?: Partial<AuthenticationParams>): AuthenticationParams => ({
   email: 'email@mail.com',
   password: 'any_password',
   ...override
