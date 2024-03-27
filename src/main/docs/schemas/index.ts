@@ -1,4 +1,5 @@
 export * from './account'
+export * from './add-survey'
 export * from './error'
 export * from './login'
 export * from './security'
