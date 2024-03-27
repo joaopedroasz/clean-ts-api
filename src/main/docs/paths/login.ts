@@ -23,7 +23,16 @@ export const loginPath = {
         }
       },
       400: {
-        description: 'Erro de requisição'
+        $ref: '#/components/badRequest'
+      },
+      401: {
+        $ref: '#/components/unauthorized'
+      },
+      500: {
+        $ref: '#/components/serverError'
+      },
+      404: {
+        $ref: '#/components/notFound'
       }
     }
   }
