@@ -31,6 +31,11 @@ export class QueryBuilder {
     return this
   }
 
+  sort (data: Record<string, any>): this {
+    this.query.push({ $sort: data })
+    return this
+  }
+
   build (): Array<Record<string, any>> {
     return this.query
   }
