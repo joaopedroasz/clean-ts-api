@@ -1,4 +1,4 @@
-import { type Collection } from 'mongodb'
+import { ObjectId, type Collection } from 'mongodb'
 
 import { MongoHelper } from '../helpers'
 import { type SurveyDocument } from '../survey/survey-mongo-repository'
@@ -21,6 +21,14 @@ const makeFakeAccountDocument = (): AccountDocument => ({
   email: 'emaiL@mail.com',
   name: 'name',
   password: 'password'
+})
+
+const makeFakeSurveyResultDocument = (override?: Partial<SurveyResultDocument>): SurveyResultDocument => ({
+  accountId: new ObjectId(),
+  answer: 'any_answer',
+  date: '2023-02-01T00:00:00.000Z',
+  surveyId: new ObjectId(),
+  ...override
 })
 
 const makeSut = (): SurveyResultMongoRepository => {
@@ -89,12 +97,7 @@ describe('Survey Result Mongo Repository', () => {
       const { insertedId: accountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
       const accountId = accountObjectId.toHexString()
 
-      await surveyResultCollection.insertOne({
-        surveyId: surveyObjectId,
-        accountId: accountObjectId,
-        answer: 'any_answer',
-        date: '2023-02-01T00:00:00.000Z'
-      })
+      await surveyResultCollection.insertOne(makeFakeSurveyResultDocument())
 
       const surveyResult = await sut.save({
         surveyId,
@@ -102,8 +105,6 @@ describe('Survey Result Mongo Repository', () => {
         answer: 'other_answer',
         date: new Date('2023-02-01T00:00:00.000Z')
       })
-
-      console.log(surveyResult)
 
       expect(surveyResult).toBeTruthy()
       expect(surveyResult.surveyId).toBe(surveyId)
@@ -113,6 +114,33 @@ describe('Survey Result Mongo Repository', () => {
       expect(surveyResult.answers[1].answer).toBe('any_answer')
       expect(surveyResult.answers[1].count).toBe(0)
       expect(surveyResult.answers[1].percent).toBe(0)
+    })
+  })
+
+  describe('loadBySurveyId', () => {
+    it('should load survey result', async () => {
+      const sut = makeSut()
+
+      const { insertedId: surveyObjectId } = await surveyCollection.insertOne(makeFakeSurveyDocument())
+      const surveyId = surveyObjectId.toHexString()
+
+      const { insertedId: accountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+
+      await surveyResultCollection.insertMany([
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'any_answer', accountId: accountObjectId }),
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'other_answer', accountId: accountObjectId })
+      ])
+
+      const surveyResult = await sut.loadBySurveyId(surveyId)
+
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult?.surveyId).toBe(surveyId)
+      expect(surveyResult?.answers[0].answer).toBe('other_answer')
+      expect(surveyResult?.answers[0].count).toBe(1)
+      expect(surveyResult?.answers[0].percent).toBe(50)
+      expect(surveyResult?.answers[1].answer).toBe('any_answer')
+      expect(surveyResult?.answers[1].count).toBe(1)
+      expect(surveyResult?.answers[1].percent).toBe(50)
     })
   })
 })
