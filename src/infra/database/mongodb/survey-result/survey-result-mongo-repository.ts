@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb'
 
 import type { SurveyResultModel, SurveyResultAnswerModel } from '@/domain/models'
 import { type SaveSurveyResultParams } from '@/domain/use-cases'
-import { type SaveSurveyResultRepository } from '@/data/protocols'
+import type { LoadSurveyResultRepository, SaveSurveyResultRepository } from '@/data/protocols'
 import { MongoHelper, QueryBuilder } from '../helpers'
 
 export type SurveyResultDocument = {
@@ -19,7 +19,7 @@ export type SurveyResultAggregation = {
   answers: SurveyResultAnswerModel[]
 }
 
-export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
+export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
   private readonly collectionName = 'survey_results'
 
   private mapToDocument (surveyResult: SaveSurveyResultParams): SurveyResultDocument {
@@ -28,6 +28,14 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
       accountId: new ObjectId(surveyResult.accountId),
       surveyId: new ObjectId(surveyResult.surveyId),
       date: surveyResult.date.toISOString()
+    }
+  }
+
+  private mapToModel (surveyResult: SurveyResultAggregation): SurveyResultModel {
+    return {
+      ...surveyResult,
+      surveyId: surveyResult.surveyId.toHexString(),
+      date: new Date(surveyResult.date)
     }
   }
 
@@ -44,14 +52,10 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
     })
     const surveyResult = await this.loadBySurveyId(surveyId)
     if (!surveyResult) throw new Error('Error on save survey result')
-    return {
-      ...surveyResult,
-      surveyId: surveyResult.surveyId.toHexString(),
-      date: new Date(surveyResult.date)
-    }
+    return surveyResult
   }
 
-  private async loadBySurveyId (surveyId: string): Promise<SurveyResultAggregation | undefined> {
+  public async loadBySurveyId (surveyId: string): Promise<SurveyResultModel | undefined> {
     const surveyResultCollection = await MongoHelper.getCollection(this.collectionName)
     const query = new QueryBuilder()
       .match({
@@ -207,6 +211,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
       .build()
     const aggregation = surveyResultCollection.aggregate<SurveyResultAggregation>(query)
     const surveyResult = await aggregation.toArray()
-    return surveyResult?.length ? surveyResult[0] : undefined
+    return surveyResult?.length ? this.mapToModel(surveyResult[0]) : undefined
   }
 }
