@@ -71,21 +71,18 @@ describe('Survey Result Mongo Repository', () => {
       const { insertedId: accountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
       const accountId = accountObjectId.toHexString()
 
-      const surveyResult = await sut.save({
+      await sut.save({
         surveyId,
         accountId,
         answer: 'any_answer',
         date: new Date('2023-02-01T00:00:00.000Z')
       })
 
+      const surveyResult = await surveyResultCollection.findOne({
+        surveyId: surveyObjectId,
+        accountId: accountObjectId
+      })
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.surveyId).toBe(surveyId)
-      expect(surveyResult.answers[0].answer).toBe('any_answer')
-      expect(surveyResult.answers[0].count).toBe(1)
-      expect(surveyResult.answers[0].percent).toBe(100)
-      expect(surveyResult.answers[1].answer).toBe('other_answer')
-      expect(surveyResult.answers[1].count).toBe(0)
-      expect(surveyResult.answers[1].percent).toBe(0)
     })
 
     it('should update a survey result if its not new', async () => {
@@ -99,21 +96,19 @@ describe('Survey Result Mongo Repository', () => {
 
       await surveyResultCollection.insertOne(makeFakeSurveyResultDocument())
 
-      const surveyResult = await sut.save({
+      await sut.save({
         surveyId,
         accountId,
         answer: 'other_answer',
         date: new Date('2023-02-01T00:00:00.000Z')
       })
 
+      const surveyResult = await surveyResultCollection.find({
+        surveyId: surveyObjectId,
+        accountId: accountObjectId
+      }).toArray()
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.surveyId).toBe(surveyId)
-      expect(surveyResult.answers[0].answer).toBe('other_answer')
-      expect(surveyResult.answers[0].count).toBe(1)
-      expect(surveyResult.answers[0].percent).toBe(100)
-      expect(surveyResult.answers[1].answer).toBe('any_answer')
-      expect(surveyResult.answers[1].count).toBe(0)
-      expect(surveyResult.answers[1].percent).toBe(0)
+      expect(surveyResult.length).toBe(1)
     })
   })
 

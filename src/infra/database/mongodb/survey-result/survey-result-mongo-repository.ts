@@ -39,7 +39,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
     }
   }
 
-  public async save ({ answer, date, accountId, surveyId }: SaveSurveyResultParams): Promise<SurveyResultModel> {
+  public async save ({ answer, date, accountId, surveyId }: SaveSurveyResultParams): Promise<void> {
     const surveyResultCollection = await MongoHelper.getCollection<SurveyResultDocument>(this.collectionName)
     await surveyResultCollection.findOneAndUpdate({
       surveyId: new ObjectId(surveyId),
@@ -50,9 +50,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
       upsert: true,
       returnDocument: 'after'
     })
-    const surveyResult = await this.loadBySurveyId(surveyId)
-    if (!surveyResult) throw new Error('Error on save survey result')
-    return surveyResult
   }
 
   public async loadBySurveyId (surveyId: string): Promise<SurveyResultModel | undefined> {
