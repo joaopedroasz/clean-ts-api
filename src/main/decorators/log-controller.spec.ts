@@ -13,7 +13,7 @@ const makeController = (): Controller => {
   return new ControllerStub()
 }
 
-const makeFakeRequest = (override?: Partial<HttpRequest>): HttpRequest => ({
+const mockRequest = (override?: Partial<HttpRequest>): HttpRequest => ({
   body: {
     any_field: 'any_values',
     ...override?.body
@@ -41,7 +41,7 @@ describe('LogControllerDecorator', () => {
   it('should call Controller.handle with correct values', async () => {
     const { sut, controllerStub } = makeSut()
     const handleSpy = jest.spyOn(controllerStub, 'handle')
-    const httpRequest: HttpRequest = makeFakeRequest()
+    const httpRequest: HttpRequest = mockRequest()
 
     await sut.handle(httpRequest)
 
@@ -50,7 +50,7 @@ describe('LogControllerDecorator', () => {
 
   it('should return the same result of the controller', async () => {
     const { sut } = makeSut()
-    const httpRequest: HttpRequest = makeFakeRequest()
+    const httpRequest: HttpRequest = mockRequest()
 
     const httpResponse = await sut.handle(httpRequest)
 
@@ -63,7 +63,7 @@ describe('LogControllerDecorator', () => {
     fakeError.stack = 'any_stack'
     jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(serverError(fakeError))
     const logSpy = jest.spyOn(logErrorRepositoryStub, 'logError')
-    const httpRequest: HttpRequest = makeFakeRequest()
+    const httpRequest: HttpRequest = mockRequest()
 
     await sut.handle(httpRequest)
 
