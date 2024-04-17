@@ -1,8 +1,9 @@
-import { forbidden, serverError } from '@/presentation/helpers/http/http'
+import { forbidden, serverError, success } from '@/presentation/helpers/http/http'
 import { mockLoadSurveyById, mockLoadSurveyResult } from '@/presentation/test'
 import { InvalidParamError } from '@/presentation/errors'
 import { LoadSurveyResultController } from './load-survey-result-controller'
 import type { HttpRequest, LoadSurveyById, LoadSurveyResult } from './protocols'
+import { mockSurveyResultModel } from '@/domain/test'
 
 const makeFakeRequest = (): HttpRequest => ({
   params: {
@@ -63,5 +64,13 @@ describe('LoadSurveyResult Controller', () => {
     await sut.handle(makeFakeRequest())
 
     expect(loadSpy).toHaveBeenCalledWith('any_survey_id')
+  })
+
+  it('should return survey result on success', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(success(mockSurveyResultModel()))
   })
 })
