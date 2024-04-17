@@ -1,7 +1,7 @@
 import { forbidden, serverError, success } from '@/presentation/helpers/http/http'
 import { mockLoadSurveyById, mockLoadSurveyResult } from '@/presentation/test'
 import { InvalidParamError } from '@/presentation/errors'
-import { LoadSurveyResultController } from './load-survey-result-controller'
+import { LoadSurveyResultController } from './load-survey-result'
 import type { HttpRequest, LoadSurveyById, LoadSurveyResult } from './protocols'
 import { mockSurveyResultModel } from '@/domain/test'
 

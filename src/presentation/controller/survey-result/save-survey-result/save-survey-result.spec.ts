@@ -1,6 +1,6 @@
 import MockDate from 'mockdate'
 
-import { SaveSurveyResultController } from './save-survey-result-controller'
+import { SaveSurveyResultController } from './save-survey-result'
 import {
   type LoadSurveyById,
   type HttpRequest,
