@@ -22,8 +22,5 @@ export const MongoHelper = {
   removeMongoId: <T>(collection: DataWithMongoId<T>): DataWithId<T> => {
     const { _id, ...collectionWithoutId } = collection
     return { ...collectionWithoutId, id: _id.toHexString() }
-  },
-  removeManyMongoIds: <T>(collections: Array<DataWithMongoId<T>>): Array<DataWithId<T>> => {
-    return collections.map(collection => MongoHelper.removeMongoId(collection))
   }
 }
