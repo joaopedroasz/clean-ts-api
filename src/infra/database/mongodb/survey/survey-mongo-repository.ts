@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb'
 import { type SurveyModel } from '@/domain/models'
 import { type AddSurveyParams } from '@/domain/use-cases'
 import { type LoadSurveysRepository, type AddSurveyRepository, type LoadSurveyByIdRepository } from '@/data/protocols'
-import { type DataWithMongoId, MongoHelper } from '../helpers'
+import { type DataWithMongoId, MongoHelper, QueryBuilder } from '../helpers'
 
 export type AnswerDocument = {
   answer: string
@@ -14,6 +14,7 @@ export type SurveyDocument = {
   question: string
   answers: AnswerDocument[]
   date: string
+  didAnswer?: boolean
 }
 
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository {
@@ -35,9 +36,37 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     })
   }
 
-  public async load (): Promise<SurveyModel[]> {
+  public async load (accountId: string): Promise<SurveyModel[]> {
     const surveyCollection = await MongoHelper.getCollection<SurveyDocument>(this.collectionName)
-    const surveys = await surveyCollection.find().toArray()
+    const query = new QueryBuilder()
+      .lookup({
+        from: 'survey_results',
+        foreignField: 'surveyId',
+        localField: '_id',
+        as: 'result'
+      })
+      .project({
+        _id: 1,
+        question: 1,
+        answers: 1,
+        date: 1,
+        didAnswer: {
+          $gte: [{
+            $size: {
+              $filter: {
+                input: '$result',
+                as: 'item',
+                cond: {
+                  $eq: ['$$item.accountId', new ObjectId(accountId)]
+                }
+              }
+            }
+          }, 1]
+        }
+      })
+      .build()
+
+    const surveys = await surveyCollection.aggregate<DataWithMongoId<SurveyDocument>>(query).toArray()
     return surveys.map(survey => this.mapToModel(survey))
   }
 

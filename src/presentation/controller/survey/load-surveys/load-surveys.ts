@@ -5,7 +5,8 @@ import {
   type HttpResponse,
   success,
   serverError,
-  noContent
+  noContent,
+  badRequest
 } from './protocols'
 
 export class LoadSurveysController implements Controller {
@@ -13,7 +14,8 @@ export class LoadSurveysController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const surveys = await this.loadSurveys.load()
+      if (!httpRequest.accountId) return badRequest(new Error('Missing param: accountId'))
+      const surveys = await this.loadSurveys.load({ accountId: httpRequest.accountId })
       if (!surveys.length) return noContent()
       return success(surveys)
     } catch (error) {

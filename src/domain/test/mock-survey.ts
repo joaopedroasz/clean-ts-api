@@ -1,5 +1,5 @@
 import { type SurveyModel } from '../models'
-import { type AddSurveyParams } from '../use-cases'
+import type { LoadSurveysParams, AddSurveyParams } from '../use-cases'
 
 export const mockSurveyModel = (): SurveyModel => ({
   id: 'any_id',
@@ -24,4 +24,8 @@ export const mockAddSurveyParams = (): AddSurveyParams => ({
     image: 'other_image'
   }],
   date: new Date()
+})
+
+export const mockLoadSurveysParams = (): LoadSurveysParams => ({
+  accountId: 'any_id'
 })
