@@ -4,7 +4,8 @@ import {
   type LoadAccountByEmailRepository,
   type UpdateAccessTokenRepository,
   type Authentication,
-  type AuthenticationParams
+  type AuthenticationParams,
+  type AuthenticationModel
 } from './protocols'
 
 export class DbAuthentication implements Authentication {
@@ -15,7 +16,7 @@ export class DbAuthentication implements Authentication {
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {}
 
-  async auth ({ email, password }: AuthenticationParams): Promise<string | undefined> {
+  async auth ({ email, password }: AuthenticationParams): Promise<AuthenticationModel | undefined> {
     const account = await this.loadAccountByEmailRepository.loadByEmail(email)
     if (!account) return undefined
 
@@ -26,6 +27,9 @@ export class DbAuthentication implements Authentication {
 
     await this.updateAccessTokenRepository.updateAccessToken({ id: account.id, token: accessToken })
 
-    return accessToken
+    return {
+      accessToken,
+      name: account.name
+    }
   }
 }
