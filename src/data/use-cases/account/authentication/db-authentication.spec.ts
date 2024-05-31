@@ -117,13 +117,16 @@ describe('DbAuthentication UseCase', () => {
     await expect(promise).rejects.toThrow(new Error('any_error'))
   })
 
-  it('should return a token on success', async () => {
+  it('should return an Authentication on success', async () => {
     const { sut } = makeSut()
 
     const authentication = mockAuthenticationParams()
-    const accessToken = await sut.auth(authentication)
+    const authenticationResponse = await sut.auth(authentication)
 
-    expect(accessToken).toBe('any_token')
+    expect(authenticationResponse).toEqual({
+      accessToken: 'any_token',
+      name: 'any_name'
+    })
   })
 
   it('should call UpdateAccessTokenRepository with correct values', async () => {
