@@ -3,6 +3,22 @@ import { ObjectId, type Collection } from 'mongodb'
 import { MongoHelper } from '../helpers'
 import { SurveyMongoRepository, type SurveyDocument } from './survey-mongo-repository'
 import { type AddSurveyParams } from '@/domain/use-cases'
+import { type AccountDocument } from '../account/account-mongo-repository'
+import { type SurveyResultDocument } from '../survey-result/survey-result-mongo-repository'
+
+const makeFakeAccountDocument = (): AccountDocument => ({
+  email: 'emaiL@mail.com',
+  name: 'name',
+  password: 'password'
+})
+
+const makeFakeSurveyResultDocument = (override?: Partial<SurveyResultDocument>): SurveyResultDocument => ({
+  accountId: new ObjectId(),
+  answer: 'any_answer',
+  date: '2023-02-01T00:00:00.000Z',
+  surveyId: new ObjectId(),
+  ...override
+})
 
 const makeFakeSurvey = (): AddSurveyParams => ({
   question: 'any_question',
@@ -34,6 +50,8 @@ const makeSut = (): SurveyMongoRepository => {
 
 describe('survey-mongo-repository.test', () => {
   let surveyCollection: Collection<SurveyDocument>
+  let accountCollection: Collection<AccountDocument>
+  let surveyResultCollection: Collection<SurveyResultDocument>
 
   const MONGO_URL = process.env.MONGO_URL ?? 'any_url'
 
@@ -47,7 +65,14 @@ describe('survey-mongo-repository.test', () => {
 
   beforeEach(async () => {
     surveyCollection = await MongoHelper.getCollection<SurveyDocument>('surveys')
-    await surveyCollection.deleteMany({})
+    accountCollection = await MongoHelper.getCollection<AccountDocument>('accounts')
+    surveyResultCollection = await MongoHelper.getCollection<SurveyResultDocument>('survey_results')
+
+    await Promise.all([
+      surveyCollection.deleteMany({}),
+      accountCollection.deleteMany({}),
+      surveyResultCollection.deleteMany({})
+    ])
   })
 
   describe('add', () => {
@@ -70,22 +95,27 @@ describe('survey-mongo-repository.test', () => {
 
   describe('load', () => {
     test('should load all surveys on success', async () => {
-      await surveyCollection.insertMany([makeFakeSurveyDocument(), makeFakeSurveyDocument()])
+      const { insertedId: accountId } = await accountCollection.insertOne(makeFakeAccountDocument())
+      const { insertedIds: surveyIds } = await surveyCollection.insertMany([makeFakeSurveyDocument(), makeFakeSurveyDocument()])
+      await surveyResultCollection.insertOne(makeFakeSurveyResultDocument({ accountId, surveyId: surveyIds[0] }))
 
       const sut = makeSut()
 
-      const surveys = await sut.load()
+      const surveys = await sut.load(accountId.toString())
 
       expect(surveys).toBeTruthy()
       expect(surveys).toHaveLength(2)
       expect(surveys[0].question).toBe('any_question')
+      expect(surveys[0].didAnswer).toBeTruthy()
       expect(surveys[1].question).toBe('any_question')
+      expect(surveys[1].didAnswer).toBeFalsy()
     })
 
     test('should load empty list', async () => {
+      const { insertedId: accountId } = await accountCollection.insertOne(makeFakeAccountDocument())
       const sut = makeSut()
 
-      const surveys = await sut.load()
+      const surveys = await sut.load(accountId.toString())
 
       expect(surveys).toBeTruthy()
       expect(surveys).toHaveLength(0)

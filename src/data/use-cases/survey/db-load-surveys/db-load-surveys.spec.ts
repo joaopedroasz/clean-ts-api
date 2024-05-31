@@ -3,7 +3,7 @@ import MockDate from 'mockdate'
 import { type LoadSurveysRepository } from './protocols'
 import { DbLoadSurveys } from './db-load-surveys'
 import { mockLoadSurveysRepository } from '@/data/test'
-import { mockSurveyModel } from '@/domain/test'
+import { mockLoadSurveysParams, mockSurveyModel } from '@/domain/test'
 
 type SutTypes = {
   sut: DbLoadSurveys
@@ -32,15 +32,17 @@ describe('DbLoadSurveys', () => {
     const { sut, loadSurveysRepositoryStub } = makeSut()
     const loadSpy = jest.spyOn(loadSurveysRepositoryStub, 'load')
 
-    await sut.load()
+    const params = mockLoadSurveysParams()
+    await sut.load(params)
 
-    expect(loadSpy).toHaveBeenCalled()
+    expect(loadSpy).toHaveBeenCalledWith('any_id')
   })
 
   it('should return a list of Surveys on success', async () => {
     const { sut } = makeSut()
 
-    const surveys = await sut.load()
+    const params = mockLoadSurveysParams()
+    const surveys = await sut.load(params)
 
     expect(surveys).toEqual([mockSurveyModel()])
   })
@@ -50,7 +52,7 @@ describe('DbLoadSurveys', () => {
 
     jest.spyOn(loadSurveysRepositoryStub, 'load').mockRejectedValueOnce(new Error())
 
-    const promise = sut.load()
+    const promise = sut.load(mockLoadSurveysParams())
 
     await expect(promise).rejects.toThrow()
   })
