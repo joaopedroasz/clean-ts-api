@@ -11,10 +11,11 @@ export class LoadSurveyResultController implements Controller {
   public async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const surveyId = httpRequest.params?.surveyId as string
+      const accountId = httpRequest.accountId as unknown as string
       const survey = await this.loadSurveyById.loadById(surveyId)
       if (!survey) return forbidden(new InvalidParamError('surveyId'))
 
-      const surveyResult = await this.loadSurveyResult.load(surveyId)
+      const surveyResult = await this.loadSurveyResult.load({ surveyId, accountId })
       return success(surveyResult)
     } catch (error) {
       return serverError(error as Error)

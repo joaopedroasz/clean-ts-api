@@ -10,7 +10,8 @@ import { mockSurveyResultModel } from '@/domain/test'
 const mockRequest = (): HttpRequest => ({
   params: {
     surveyId: 'any_survey_id'
-  }
+  },
+  accountId: 'any_account_id'
 })
 
 type SutTypes = {
@@ -40,7 +41,7 @@ describe('LoadSurveyResult Controller', () => {
     MockDate.reset()
   })
 
-  it('should call LoadSurveyById with correct value', async () => {
+  it('should call LoadSurveyById with correct values', async () => {
     const { sut, loadSurveyByIdStub } = makeSut()
     const loadByIdSpy = jest.spyOn(loadSurveyByIdStub, 'loadById')
 
@@ -73,7 +74,7 @@ describe('LoadSurveyResult Controller', () => {
 
     await sut.handle(mockRequest())
 
-    expect(loadSpy).toHaveBeenCalledWith('any_survey_id')
+    expect(loadSpy).toHaveBeenCalledWith({ surveyId: 'any_survey_id', accountId: 'any_account_id' })
   })
 
   it('should return survey result on success', async () => {

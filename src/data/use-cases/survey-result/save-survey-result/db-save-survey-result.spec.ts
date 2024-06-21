@@ -46,7 +46,7 @@ describe('SaveSurveyResult UseCase', () => {
 
     await sut.save(mockSaveSurveyResultParams())
 
-    expect(loadBySurveyIdSpy).toHaveBeenCalledWith('any_survey_id')
+    expect(loadBySurveyIdSpy).toHaveBeenCalledWith({ accountId: 'any_account_id', surveyId: 'any_survey_id' })
   })
 
   it('should return a SurveyResult on success', async () => {

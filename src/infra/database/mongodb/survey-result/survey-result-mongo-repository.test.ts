@@ -119,23 +119,93 @@ describe('Survey Result Mongo Repository', () => {
       const { insertedId: surveyObjectId } = await surveyCollection.insertOne(makeFakeSurveyDocument())
       const surveyId = surveyObjectId.toHexString()
 
-      const { insertedId: accountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+      const { insertedId: firstAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+      const firstAccount = firstAccountObjectId.toHexString()
+
+      const { insertedId: secondAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
 
       await surveyResultCollection.insertMany([
-        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'any_answer', accountId: accountObjectId }),
-        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'other_answer', accountId: accountObjectId })
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'any_answer', accountId: firstAccountObjectId }),
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'other_answer', accountId: secondAccountObjectId })
       ])
 
-      const surveyResult = await sut.loadBySurveyId(surveyId)
+      const surveyResult = await sut.loadBySurveyId({ surveyId, accountId: firstAccount })
+
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult?.surveyId).toBe(surveyId)
+      expect(surveyResult?.answers[0].answer).toBe('any_answer')
+      expect(surveyResult?.answers[0].count).toBe(1)
+      expect(surveyResult?.answers[0].percent).toBe(50)
+      expect(surveyResult?.answers[0].isCurrentAccountAnswer).toBeTruthy()
+      expect(surveyResult?.answers[1].answer).toBe('other_answer')
+      expect(surveyResult?.answers[1].count).toBe(1)
+      expect(surveyResult?.answers[1].percent).toBe(50)
+      expect(surveyResult?.answers[1].isCurrentAccountAnswer).toBeFalsy()
+    })
+
+    it('should load survey result with 3 accounts', async () => {
+      const sut = makeSut()
+
+      const { insertedId: surveyObjectId } = await surveyCollection.insertOne(makeFakeSurveyDocument())
+      const surveyId = surveyObjectId.toHexString()
+
+      const { insertedId: firstAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+
+      const { insertedId: secondAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+      const secondAccountId = secondAccountObjectId.toHexString()
+
+      const { insertedId: thirdAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+
+      await surveyResultCollection.insertMany([
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'any_answer', accountId: firstAccountObjectId }),
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'other_answer', accountId: secondAccountObjectId }),
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'other_answer', accountId: thirdAccountObjectId })
+      ])
+
+      const surveyResult = await sut.loadBySurveyId({ surveyId, accountId: secondAccountId })
 
       expect(surveyResult).toBeTruthy()
       expect(surveyResult?.surveyId).toBe(surveyId)
       expect(surveyResult?.answers[0].answer).toBe('other_answer')
-      expect(surveyResult?.answers[0].count).toBe(1)
-      expect(surveyResult?.answers[0].percent).toBe(50)
+      expect(surveyResult?.answers[0].count).toBe(2)
+      expect(surveyResult?.answers[0].percent).toBe(67)
+      expect(surveyResult?.answers[0].isCurrentAccountAnswer).toBeTruthy()
       expect(surveyResult?.answers[1].answer).toBe('any_answer')
       expect(surveyResult?.answers[1].count).toBe(1)
+      expect(surveyResult?.answers[1].percent).toBe(33)
+      expect(surveyResult?.answers[1].isCurrentAccountAnswer).toBeFalsy()
+    })
+
+    it('should load survey result with 3 accounts', async () => {
+      const sut = makeSut()
+
+      const { insertedId: surveyObjectId } = await surveyCollection.insertOne(makeFakeSurveyDocument())
+      const surveyId = surveyObjectId.toHexString()
+
+      const { insertedId: firstAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+
+      const { insertedId: secondAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+
+      const { insertedId: thirdAccountObjectId } = await accountCollection.insertOne(makeFakeAccountDocument())
+      const thirdAccountId = thirdAccountObjectId.toHexString()
+
+      await surveyResultCollection.insertMany([
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'any_answer', accountId: firstAccountObjectId }),
+        makeFakeSurveyResultDocument({ surveyId: surveyObjectId, answer: 'other_answer', accountId: secondAccountObjectId })
+      ])
+
+      const surveyResult = await sut.loadBySurveyId({ surveyId, accountId: thirdAccountId })
+
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult?.surveyId).toBe(surveyId)
+      expect(surveyResult?.answers[0].answer).toBe('any_answer')
+      expect(surveyResult?.answers[0].count).toBe(1)
+      expect(surveyResult?.answers[0].percent).toBe(50)
+      expect(surveyResult?.answers[0].isCurrentAccountAnswer).toBeFalsy()
+      expect(surveyResult?.answers[1].answer).toBe('other_answer')
+      expect(surveyResult?.answers[1].count).toBe(1)
       expect(surveyResult?.answers[1].percent).toBe(50)
+      expect(surveyResult?.answers[1].isCurrentAccountAnswer).toBeFalsy()
     })
   })
 })

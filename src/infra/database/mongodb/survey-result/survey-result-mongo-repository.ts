@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 import type { SurveyResultModel, SurveyResultAnswerModel } from '@/domain/models'
-import { type SaveSurveyResultParams } from '@/domain/use-cases'
+import { type LoadSurveyResultParams, type SaveSurveyResultParams } from '@/domain/use-cases'
 import type { LoadSurveyResultRepository, SaveSurveyResultRepository } from '@/data/protocols'
 import { MongoHelper, QueryBuilder } from '../helpers'
 
@@ -52,7 +52,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
     })
   }
 
-  public async loadBySurveyId (surveyId: string): Promise<SurveyResultModel | undefined> {
+  public async loadBySurveyId ({ surveyId, accountId }: LoadSurveyResultParams): Promise<SurveyResultModel | undefined> {
     const surveyResultCollection = await MongoHelper.getCollection(this.collectionName)
     const query = new QueryBuilder()
       .match({
@@ -90,6 +90,17 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         },
         count: {
           $sum: 1
+        },
+        currentAccountAnswer: {
+          $push: {
+            $cond: [
+              {
+                $eq: ['$data.accountId', new ObjectId(accountId)]
+              },
+              '$data.answer',
+              undefined
+            ]
+          }
         }
       })
       .project({
@@ -124,6 +135,11 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
                     },
                     else: 0
                   }
+                },
+                isCurrentAccountAnswer: {
+                  $eq: ['$$item.answer', {
+                    $arrayElemAt: ['$currentAccountAnswer', 0]
+                  }]
                 }
               }]
             }
@@ -164,7 +180,8 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
           question: '$question',
           date: '$date',
           answer: '$answers.answer',
-          image: '$answers.image'
+          image: '$answers.image',
+          isCurrentAccountAnswer: '$answers.isCurrentAccountAnswer'
         },
         count: {
           $sum: '$answers.count'
@@ -181,12 +198,18 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         answer: {
           answer: '$_id.answer',
           image: '$_id.image',
-          count: '$count',
-          percent: '$percent'
+          count: {
+            $round: ['$count']
+          },
+          percent: {
+            $round: ['$percent']
+          },
+          isCurrentAccountAnswer: '$_id.isCurrentAccountAnswer'
         }
       })
       .sort({
-        'answer.count': -1
+        'answer.count': -1,
+        'answer.answer': 1
       })
       .group({
         _id: {
