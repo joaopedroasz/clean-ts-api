@@ -1,6 +1,6 @@
 {
   "name": "clean-ts-api",
-  "version": "2.4.5",
+  "version": "2.4.6",
   "description": "API do Curso do Rodrigo Manguinho",
   "main": "index.js",
   "scripts": {
