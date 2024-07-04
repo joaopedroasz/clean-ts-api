@@ -1,6 +1,5 @@
 import {
   type Controller,
-  type HttpRequest,
   type HttpResponse,
   type AddAccount,
   badRequest,
@@ -12,19 +11,18 @@ import {
   EmailInUseError
 } from './protocols'
 
-export class SignUpController implements Controller {
+export class SignUpController implements Controller<SignUpController.Request> {
   constructor (
     private readonly addAccount: AddAccount,
     private readonly validation: Validation,
     private readonly authentication: Authentication
   ) {}
 
-  public async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  public async handle (request: SignUpController.Request): Promise<HttpResponse> {
     try {
-      if (!httpRequest.body) return badRequest(new Error('Missing body'))
-      const error = this.validation.validate(httpRequest.body)
+      const error = this.validation.validate(request)
       if (error) return badRequest(error)
-      const { password, email, name } = httpRequest.body as { password: string, email: string, name: string }
+      const { password, email, name } = request
       const addedAccount = await this.addAccount.add({
         email,
         name,
@@ -34,9 +32,16 @@ export class SignUpController implements Controller {
       const authentication = await this.authentication.auth({ email, password })
       return success(authentication)
     } catch (error) {
-      console.log(error)
-
       return serverError(error as Error)
     }
+  }
+}
+
+export namespace SignUpController {
+  export type Request = {
+    name: string
+    email: string
+    password: string
+    passwordConfirmation: string
   }
 }

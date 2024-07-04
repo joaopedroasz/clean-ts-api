@@ -1,14 +1,14 @@
 import MockDate from 'mockdate'
 
 import { LoadSurveysController } from './load-surveys'
-import { type LoadSurveys, success, serverError, noContent, type HttpRequest } from './protocols'
+import { type LoadSurveys, success, serverError, noContent, type Controller } from './protocols'
 import { mockSurveyModel } from '@/domain/test'
 import { mockLoadSurveys } from '@/presentation/test'
 
-const mockRequest = (override?: HttpRequest): HttpRequest => ({ accountId: 'any_id', ...override })
+const mockRequest = (override?: LoadSurveysController.Request): LoadSurveysController.Request => ({ accountId: 'any_id', ...override })
 
 type SutTypes = {
-  sut: LoadSurveysController
+  sut: Controller<LoadSurveysController.Request>
   loadSurveysStub: LoadSurveys
 }
 
@@ -42,26 +42,26 @@ describe('LoadSurveys Controller', () => {
   it('should return 200 on success', async () => {
     const { sut } = makeSut()
 
-    const httpResponse = await sut.handle(mockRequest())
+    const response = await sut.handle(mockRequest())
 
-    expect(httpResponse).toEqual(success([mockSurveyModel()]))
+    expect(response).toEqual(success([mockSurveyModel()]))
   })
 
   it('should return 500 if LoadSurveys throws', async () => {
     const { sut, loadSurveysStub } = makeSut()
     jest.spyOn(loadSurveysStub, 'load').mockRejectedValueOnce(new Error())
 
-    const httpResponse = await sut.handle(mockRequest())
+    const response = await sut.handle(mockRequest())
 
-    expect(httpResponse).toEqual(serverError(new Error()))
+    expect(response).toEqual(serverError(new Error()))
   })
 
   it('should return 204 if LoadSurveys returns empty', async () => {
     const { sut, loadSurveysStub } = makeSut()
     jest.spyOn(loadSurveysStub, 'load').mockResolvedValueOnce([])
 
-    const httpResponse = await sut.handle(mockRequest())
+    const response = await sut.handle(mockRequest())
 
-    expect(httpResponse).toEqual(noContent())
+    expect(response).toEqual(noContent())
   })
 })

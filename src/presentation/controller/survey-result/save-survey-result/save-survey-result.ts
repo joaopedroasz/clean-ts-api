@@ -1,5 +1,4 @@
 import {
-  type HttpRequest,
   type HttpResponse,
   type Controller,
   type LoadSurveyById,
@@ -10,17 +9,14 @@ import {
   success
 } from './protocols'
 
-export class SaveSurveyResultController implements Controller {
+export class SaveSurveyResultController implements Controller<SaveSurveyResultController.Request> {
   constructor (
     private readonly loadSurveyById: LoadSurveyById,
     private readonly saveSurveyResult: SaveSurveyResult
   ) {}
 
-  public async handle (request: HttpRequest): Promise<HttpResponse> {
+  public async handle ({ accountId, answer, surveyId }: SaveSurveyResultController.Request): Promise<HttpResponse> {
     try {
-      const { accountId } = request as { accountId: string }
-      const { surveyId } = request.params as { surveyId: string }
-      const { answer } = request.body as { answer: string }
       const survey = await this.loadSurveyById.loadById(surveyId)
       if (!survey) return forbidden(new InvalidParamError('surveyId'))
       const answers = survey.answers.map(({ answer }) => answer)
@@ -32,5 +28,13 @@ export class SaveSurveyResultController implements Controller {
     } catch (error) {
       return serverError(error as Error)
     }
+  }
+}
+
+export namespace SaveSurveyResultController {
+  export type Request = {
+    surveyId: string
+    answer: string
+    accountId: string
   }
 }
