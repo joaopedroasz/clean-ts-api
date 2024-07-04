@@ -122,9 +122,9 @@ describe('SignUp Controller', () => {
     expect(response).toEqual(serverError(new ServerError()))
   })
 
-  it('should return 403 if AddAccount returns undefined', async () => {
+  it('should return 403 if AddAccount returns false', async () => {
     const { sut, addAccountStub } = makeSut()
-    jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(undefined)
+    jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(false)
 
     const request = mockRequest()
 

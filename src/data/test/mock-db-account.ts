@@ -1,11 +1,10 @@
 import type { AccountModel } from '@/domain/models'
 import { mockAccountModel } from '@/domain/test'
-import type { AddAccountParams } from '@/domain/use-cases'
 import type { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenInput, LoadAccountByTokenRepository, UpdateAccessTokenInput, UpdateAccessTokenRepository } from '../protocols'
 
 export const mockAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (account: AddAccountParams): Promise<AccountModel> {
+    async add (account: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
       return mockAccountModel()
     }
   }

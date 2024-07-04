@@ -39,21 +39,19 @@ describe('DbAddAccountUseCase', () => {
     expect(loadAccountSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
-  it('should return undefined if LoadAccountByEmailRepository returns an account', async () => {
+  it('should return false if LoadAccountByEmailRepository returns an account', async () => {
     const { loadAccountByEmailRepositoryStub, sut } = makeSut()
-
     jest
       .spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
       .mockResolvedValueOnce(mockAccountModel())
 
     const account = await sut.add(mockAddAccountParams())
 
-    expect(account).toBeUndefined()
+    expect(account).toBeFalsy()
   })
 
   it('should throw if LoadAccountByEmailRepository throws', async () => {
     const { loadAccountByEmailRepositoryStub, sut } = makeSut()
-
     jest
       .spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
       .mockRejectedValueOnce(new Error('any_error'))
@@ -74,7 +72,6 @@ describe('DbAddAccountUseCase', () => {
 
   it('should throw if Hasher throws', async () => {
     const { hasherStub, sut } = makeSut()
-
     jest
       .spyOn(hasherStub, 'hash')
       .mockRejectedValueOnce(new Error('any_error'))
@@ -99,7 +96,6 @@ describe('DbAddAccountUseCase', () => {
 
   it('should throw if AddAccountRepository throws', async () => {
     const { addAccountRepositoryStub, sut } = makeSut()
-
     jest
       .spyOn(addAccountRepositoryStub, 'add')
       .mockRejectedValueOnce(new Error('any_error'))
@@ -109,11 +105,11 @@ describe('DbAddAccountUseCase', () => {
     await expect(promise).rejects.toThrow(new Error('any_error'))
   })
 
-  it('should return an account on success', async () => {
+  it('should return true on success', async () => {
     const { sut } = makeSut()
 
-    const account = await sut.add(mockAddAccountParams())
+    const isAddedAccount = await sut.add(mockAddAccountParams())
 
-    expect(account).toEqual(mockAccountModel())
+    expect(isAddedAccount).toBeTruthy()
   })
 })

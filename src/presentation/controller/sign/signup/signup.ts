@@ -23,12 +23,12 @@ export class SignUpController implements Controller<SignUpController.Request> {
       const error = this.validation.validate(request)
       if (error) return badRequest(error)
       const { password, email, name } = request
-      const addedAccount = await this.addAccount.add({
+      const isAddedAccount = await this.addAccount.add({
         email,
         name,
         password
       })
-      if (!addedAccount) return forbidden(new EmailInUseError())
+      if (!isAddedAccount) return forbidden(new EmailInUseError())
       const authentication = await this.authentication.auth({ email, password })
       return success(authentication)
     } catch (error) {

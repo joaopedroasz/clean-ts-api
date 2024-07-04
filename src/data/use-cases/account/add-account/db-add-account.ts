@@ -1,10 +1,8 @@
-import {
-  type Hasher,
-  type AccountModel,
-  type AddAccount,
-  type AddAccountParams,
-  type AddAccountRepository,
-  type LoadAccountByEmailRepository
+import type {
+  Hasher,
+  AddAccount,
+  AddAccountRepository,
+  LoadAccountByEmailRepository
 } from './protocols'
 
 export class DbAddAccount implements AddAccount {
@@ -14,14 +12,15 @@ export class DbAddAccount implements AddAccount {
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository
   ) {}
 
-  public async add ({ password, email, name }: AddAccountParams): Promise<AccountModel | undefined> {
+  public async add ({ password, email, name }: AddAccount.Params): Promise<AddAccount.Result> {
     const existentAccount = await this.loadAccountByEmailRepository.loadByEmail(email)
-    if (existentAccount) return undefined
+    if (existentAccount) return false
     const encryptedPassword = await this.hasher.hash(password)
-    return await this.addAccountRepository.add({
+    await this.addAccountRepository.add({
       email,
       name,
       password: encryptedPassword
     })
+    return true
   }
 }
