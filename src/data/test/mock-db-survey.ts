@@ -1,11 +1,10 @@
-import { type AddSurveyParams } from '@/domain/use-cases'
 import type { LoadSurveyByIdRepository, AddSurveyRepository, LoadSurveysRepository } from '../protocols'
 import { type SurveyModel } from '@/domain/models'
 import { mockSurveyModel } from '@/domain/test'
 
 export const mockAddSurveyRepository = (): AddSurveyRepository => {
   class AddSurveyRepositoryStub implements AddSurveyRepository {
-    public async add (surveyData: AddSurveyParams): Promise<void> {}
+    public async add (surveyData: AddSurveyRepository.Params): Promise<void> {}
   }
   return new AddSurveyRepositoryStub()
 }

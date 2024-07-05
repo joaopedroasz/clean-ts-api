@@ -2,9 +2,9 @@ import { ObjectId, type Collection } from 'mongodb'
 
 import { MongoHelper } from '../helpers'
 import { SurveyMongoRepository, type SurveyDocument } from './survey-mongo-repository'
-import { type AddSurveyParams } from '@/domain/use-cases'
 import { type AccountDocument } from '../account/account-mongo-repository'
 import { type SurveyResultDocument } from '../survey-result/survey-result-mongo-repository'
+import { type AddSurveyRepository } from '@/data/protocols'
 
 const makeFakeAccountDocument = (): AccountDocument => ({
   email: 'emaiL@mail.com',
@@ -20,7 +20,7 @@ const makeFakeSurveyResultDocument = (override?: Partial<SurveyResultDocument>):
   ...override
 })
 
-const makeFakeSurvey = (): AddSurveyParams => ({
+const makeFakeSurvey = (): AddSurveyRepository.Params => ({
   question: 'any_question',
   answers: [{
     image: 'any_image',

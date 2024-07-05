@@ -1,7 +1,6 @@
 import { ObjectId } from 'mongodb'
 
 import { type SurveyModel } from '@/domain/models'
-import { type AddSurveyParams } from '@/domain/use-cases'
 import { type LoadSurveysRepository, type AddSurveyRepository, type LoadSurveyByIdRepository } from '@/data/protocols'
 import { type DataWithMongoId, MongoHelper, QueryBuilder } from '../helpers'
 
@@ -28,7 +27,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     }
   }
 
-  public async add ({ date, ...data }: AddSurveyParams): Promise<void> {
+  public async add ({ date, ...data }: AddSurveyRepository.Params): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection<SurveyDocument>(this.collectionName)
     await surveyCollection.insertOne({
       ...data,
