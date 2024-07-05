@@ -1,6 +1,6 @@
 import type { AccountModel } from '@/domain/models'
 import { mockAccountModel } from '@/domain/test'
-import type { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenInput, LoadAccountByTokenRepository, UpdateAccessTokenInput, UpdateAccessTokenRepository } from '../protocols'
+import type { AddAccountRepository, LoadAccountByEmailRepository, LoadAccountByTokenRepository, UpdateAccessTokenInput, UpdateAccessTokenRepository } from '../protocols'
 
 export const mockAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
@@ -22,7 +22,7 @@ export const mockLoadAccountByEmailRepository = (): LoadAccountByEmailRepository
 
 export const mockLoadAccountByToken = (): LoadAccountByTokenRepository => {
   class LoadAccountByTokenStub implements LoadAccountByTokenRepository {
-    async loadByToken (data: LoadAccountByTokenInput): Promise<AccountModel | undefined> {
+    async loadByToken (data: LoadAccountByTokenRepository.Params): Promise<LoadAccountByTokenRepository.Result> {
       return mockAccountModel()
     }
   }

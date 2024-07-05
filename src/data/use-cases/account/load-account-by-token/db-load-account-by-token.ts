@@ -1,9 +1,7 @@
-import {
-  type LoadAccountByToken,
-  type Decrypter,
-  type LoadAccountByTokenRepository,
-  type LoadAccountByTokenParams,
-  type AccountModel
+import type {
+  LoadAccountByToken,
+  Decrypter,
+  LoadAccountByTokenRepository
 } from './protocols'
 
 export class DbLoadAccountByToken implements LoadAccountByToken {
@@ -12,7 +10,7 @@ export class DbLoadAccountByToken implements LoadAccountByToken {
     private readonly loadAccountByTokenRepository: LoadAccountByTokenRepository
   ) {}
 
-  public async load ({ token, role }: LoadAccountByTokenParams): Promise<AccountModel | undefined> {
+  public async load ({ token, role }: LoadAccountByToken.Params): Promise<LoadAccountByToken.Result> {
     try {
       const accessToken = await this.decrypter.decrypt(token)
       if (!accessToken) return undefined

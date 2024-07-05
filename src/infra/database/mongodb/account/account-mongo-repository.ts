@@ -6,8 +6,7 @@ import type {
   AddAccountRepository,
   UpdateAccessTokenRepository,
   UpdateAccessTokenInput,
-  LoadAccountByTokenRepository,
-  LoadAccountByTokenInput
+  LoadAccountByTokenRepository
 } from '@/data/protocols'
 import { MongoHelper } from '../helpers'
 
@@ -40,7 +39,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     await accountCollection.updateOne({ _id: new ObjectId(id) }, { $set: { accessToken: token } })
   }
 
-  public async loadByToken ({ token, role }: LoadAccountByTokenInput): Promise<AccountModel | undefined> {
+  public async loadByToken ({ token, role }: LoadAccountByTokenRepository.Params): Promise<AccountModel | undefined> {
     const accountCollection = await MongoHelper.getCollection<AccountDocument>(this.collectionName)
     const account = await accountCollection.findOne({
       accessToken: token,

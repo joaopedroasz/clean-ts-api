@@ -1,5 +1,4 @@
-import type { AccountModel } from '@/domain/models'
-import type { AddAccount, Authentication, LoadAccountByToken, LoadAccountByTokenParams } from '@/domain/use-cases'
+import type { AddAccount, Authentication, LoadAccountByToken } from '@/domain/use-cases'
 import { mockAccountModel, mockAuthenticationModel } from '@/domain/test'
 
 export const mockAddAccount = (): AddAccount => {
@@ -22,7 +21,7 @@ export const mockAuthentication = (): Authentication => {
 
 export const mockLoadAccountByToken = (): LoadAccountByToken => {
   class LoadAccountByTokenStub implements LoadAccountByToken {
-    async load (data: LoadAccountByTokenParams): Promise<AccountModel | undefined> {
+    async load (data: LoadAccountByToken.Params): Promise<LoadAccountByToken.Result > {
       return mockAccountModel()
     }
   }

@@ -1,10 +1,13 @@
 import { type AccountModel } from '@/domain/models'
 
-export type LoadAccountByTokenInput = {
-  token: string
-  role?: string
+export interface LoadAccountByTokenRepository {
+  loadByToken: (data: LoadAccountByTokenRepository.Params) => Promise<LoadAccountByTokenRepository.Result>
 }
 
-export interface LoadAccountByTokenRepository {
-  loadByToken: (data: LoadAccountByTokenInput) => Promise<AccountModel | undefined>
+export namespace LoadAccountByTokenRepository {
+  export type Params = {
+    token: string
+    role?: string
+  }
+  export type Result = AccountModel | undefined
 }
