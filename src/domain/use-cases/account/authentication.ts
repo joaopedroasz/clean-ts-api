@@ -1,10 +1,15 @@
-import { type AuthenticationModel } from '@/domain/models'
-
-export type AuthenticationParams = {
-  email: string
-  password: string
+export interface Authentication {
+  auth: (authentication: Authentication.Params) => Promise<Authentication.Result>
 }
 
-export interface Authentication {
-  auth: (authentication: AuthenticationParams) => Promise<AuthenticationModel | undefined>
+export namespace Authentication {
+  export type Params = {
+    email: string
+    password: string
+  }
+  export type Model = {
+    name: string
+    accessToken: string
+  }
+  export type Result = Authentication.Model | undefined
 }

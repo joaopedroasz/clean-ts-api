@@ -1,6 +1,6 @@
-import { type AuthenticationModel } from '../models'
+import { type Authentication } from '../use-cases'
 
-export const mockAuthenticationModel = (): AuthenticationModel => ({
+export const mockAuthenticationModel = (): Authentication.Model => ({
   accessToken: 'any_token',
   name: 'any_name'
 })

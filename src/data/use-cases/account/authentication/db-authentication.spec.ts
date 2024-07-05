@@ -1,8 +1,8 @@
-import {
-  type HashCompare,
-  type LoadAccountByEmailRepository,
-  type Encrypter,
-  type UpdateAccessTokenRepository
+import type {
+  HashCompare,
+  LoadAccountByEmailRepository,
+  Encrypter,
+  UpdateAccessTokenRepository
 } from './protocols'
 import { DbAuthentication } from './db-authentication'
 import { mockHashCompare, mockEncrypter, mockLoadAccountByEmailRepository, mockUpdateAccessTokenRepository } from '@/data/test'

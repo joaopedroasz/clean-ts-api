@@ -1,5 +1,5 @@
 import { type AccountModel } from '../models'
-import type { AddAccount, AuthenticationParams } from '../use-cases'
+import type { AddAccount, Authentication } from '../use-cases'
 
 export const mockAddAccountParams = (override?: Partial<AddAccount.Params>): AddAccount.Params => ({
   name: 'any_name',
@@ -16,7 +16,7 @@ export const mockAccountModel = (override?: Partial<AccountModel>): AccountModel
   ...override
 })
 
-export const mockAuthenticationParams = (override?: Partial<AuthenticationParams>): AuthenticationParams => ({
+export const mockAuthenticationParams = (override?: Partial<Authentication.Params>): Authentication.Params => ({
   email: 'email@mail.com',
   password: 'any_password',
   ...override
